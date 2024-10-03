@@ -10,8 +10,8 @@
 ################
 
 setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
-# load("IAV_Env_Eco.RData")
-# save.image("IAV_Env_Eco.RData")
+# load("IAV_Sources_and_Sinks.RData")
+# save.image("IAV_Sources_and_Sinks.RData")
 
 # ##########################
 # 
@@ -111,7 +111,7 @@ eq <- function(x,y) {
 ##########################
 ### Read in the datasets to be merged.
 
-data1 <- as.data.frame(read_excel("swine-surveillance-data_8_27_24.xlsx"))
+data1 <- as.data.frame(read_excel("Data/swine-surveillance-data_8_27_24.xlsx"))
 data1$Date <- as.Date(data1$Date)
 
 data1$H1 <- str_remove(data1$H1, ".*\\|");table(data1$H1)
@@ -121,7 +121,7 @@ data1$N2 <- str_remove(data1$N2, ".*\\|");table(data1$N2)
 
 ##########################
 
-data2 <- as.data.frame(read.table(file = '000-query-result-v3.tsv', sep = '\t', header = TRUE))
+data2 <- as.data.frame(read.table(file = 'Data/000-query-result-v3.tsv', sep = '\t', header = TRUE))
 data2 <- data2[,c(1:16)] #drops columns for HA sequence and NA sequence
 colnames(data2) <- c("Barcode","Strain","Host","Subtype","Year","Month","Day","Country","State","Source",
                      "H_Genbank","N_Genbank","Constellation","Ha_clade","Na_clade","GL_Clade");dim(data2);head(data2)
@@ -134,7 +134,7 @@ data2 <- data2[,c("Barcode","Strain","Host","Subtype","Year","Month","Day","Coun
 ### Modify dataset structure before they are merged.
 
 # GGG 10/2/2024 000-query-result-v3--octoFLU-classify
-data2_reclassifications <- as.data.frame(read.table(file = '000-query-result-v3--octoFLU-classify.txt', sep = '\t', header = TRUE));head(data2_reclassifications);dim(data2_reclassifications)
+data2_reclassifications <- as.data.frame(read.table(file = 'Data/000-query-result-v3--octoFLU-classify.txt', sep = '\t', header = TRUE));head(data2_reclassifications);dim(data2_reclassifications)
 colnames(data2_reclassifications) <- c("Strain", "Barcode","segment_name","space","segment_subtype","Clade_rec","Gl_clade_rec")
 data2_reclassifications$segment_name <- ifelse(is.na(data2_reclassifications$segment_name), "NA", data2_reclassifications$segment_name);table(data2_reclassifications$segment_name)
 data2_rec_HA <- data2_reclassifications[which(data2_reclassifications$segment_name == "HA"),];dim(data2_rec_HA)
@@ -228,7 +228,7 @@ data2$Date <- as.Date(paste(data2$Year,data2$Month,data2$Day,sep="-"));head(data
 
 ##########################
 ###data3
-data3 <- as.data.frame(read.table(file = '2023-11-09.tsv', sep = '\t', header = FALSE));dim(data3)
+data3 <- as.data.frame(read.table(file = 'Data/2023-11-09.tsv', sep = '\t', header = FALSE));dim(data3)
 data3 <- data3[,c(1:16)] #drops columns for HA sequence and NA sequence
 
 colnames(data3) <- c("Barcode","Strain","Host","Subtype","Year","Month","Day","Country","State","Source",
@@ -238,7 +238,7 @@ data3$Date <- as.Date(paste(data3$Year, data3$Month, data3$Day, sep="-"))
 data3 <- data3[,c("Barcode","Strain","Host","Subtype","Year","Month","Day","Country","State","Source",
                   "H_Genbank","N_Genbank","Constellation","Na_clade")]
 
-data3_reclassifications <- as.data.frame(read.table(file = '2023-11-09--octoFLU-classify.txt', sep = '\t', header = TRUE));head(data3_reclassifications);dim(data3_reclassifications)
+data3_reclassifications <- as.data.frame(read.table(file = 'Data/2023-11-09--octoFLU-classify.txt', sep = '\t', header = TRUE));head(data3_reclassifications);dim(data3_reclassifications)
 colnames(data3_reclassifications) <- c("Strain", "Barcode","segment_name","space","segment_subtype","Clade_rec","Gl_clade_rec")
 data3_reclassifications$segment_name <- ifelse(is.na(data3_reclassifications$segment_name), "NA", data3_reclassifications$segment_name);table(data3_reclassifications$segment_name)
 data3_rec_HA <- data3_reclassifications[which(data3_reclassifications$segment_name == "HA"),];dim(data3_rec_HA)
@@ -861,7 +861,7 @@ df3 <- merge(df2, data_uniq, by="UID_complex", all.y=FALSE);dim(df3) # df3 is a 
 ### Let's add in first state, last state, and maximal geographic distance between state centroids
 # Download state centroids
 # https://github.com/ajduberstein/us_centroids/blob/master/state.csv
-centroids <- read.csv("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco/us_centroids-master/us_centroids-master/state.csv")
+centroids <- read.csv("Data/state.csv")
 
 stats::dist(centroids[,1:2],diag=TRUE,upper=TRUE)
 geodistm <- centroids[,2:1];colnames(geodistm) <- c("lon","lat");rownames(geodistm) <- centroids$postal_code
@@ -905,7 +905,7 @@ data_uniq$Persistence_scaled <- data_uniq$Persistence/mean(data_uniq$Persistence
 data_uniq$Date_min_year <- as.factor(substr(data_uniq$Date_min, 1, 4))
 data_uniq$Date_min_year <- factor(data_uniq$Date_min_year)
 
-# rm(df2, df3, dfstore, centroids, dat, data_subset, states, list_sinks, list_sources, sink_table, source_table, data1, data2)
+# rm(df2, df3, dfstore, dat, data_subset, states, list_sinks, list_sources, sink_table, source_table, data1, data2)
 # rm(date_max, date_min, i, con, Maxdist, prop, sinks, sources, state_first, state_sink, state_source, ui)
 
 ##############################
@@ -917,8 +917,9 @@ data_uniq$Date_min_year <- factor(data_uniq$Date_min_year)
 # https://quickstats.nass.usda.gov/
 # Year: all since 2008 
 # When the data are pulled up, click "spreadsheet" to download.
-data_usda <- as.data.frame(read.csv("usda_quick_stats_7_28_22.csv"))
+data_usda <- as.data.frame(read.csv("Data/usda_quick_stats_10_3_24.csv"))
 data_usda$State_code <- state.abb[match(tolower(data_usda$State),tolower(state.name))]
+data_usda <- data_usda[which(data_usda$Year != 2023),]
 
 data_usda_hi <- data_usda[which(data_usda$Data.Item == "HOGS - INVENTORY"),]
 data_usda_hi <- as.data.frame(data_usda_hi[,c("Year","Period","State_code","Value")])
@@ -992,7 +993,7 @@ write.csv(data_uniq, "data_uniq.csv", quote=FALSE)
 ##############################
 ##############################
 #######
-save.image("IAV_Env_Eco_script1.5.RData")
+save.image("IAV_Sources_and_Sinks.RData")
 #######
 
 ##############################
@@ -1184,14 +1185,13 @@ UIDs_include <- intersect(c(unique(data$UID_complex[grep("H", data$UID_complex)]
                           c(unique(data$UID_complex[grep("V", data$UID_complex)])))
 
 data_5y <- data_nona_microreact[which(data_nona_microreact$Date > (date_max - years(5))),] #gather the data with dates later than 5 years before the final date in the dataset
-centroids <- read.csv("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco/us_centroids-master/us_centroids-master/state.csv")
 
 data_5y <- merge(data_5y, centroids, by.x="State", by.y="postal_code")
 data_5y <- data_5y[,c("Ha_clade","Date","State","lng","lat")]
 
-colors_H1 <- readLines("Colors/colormap-H1.txt")
+colors_H1 <- readLines("Data/colormap-H1.txt")
 colors_H1 <- as.data.frame(str_split_fixed(colors_H1, "\t", 2));colors_H1
-colors_H3 <- readLines("Colors/colormap-H3.txt")
+colors_H3 <- readLines("Data/colormap-H3.txt")
 colors_H3 <- as.data.frame(str_split_fixed(colors_H3, "\t", 2));colors_H3
 
 colnames(colors_H1) <- colnames(colors_H3) <- c("clade","hex_color")
