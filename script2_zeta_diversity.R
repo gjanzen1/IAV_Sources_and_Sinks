@@ -1,5 +1,5 @@
 ################
-### This script generates zeta diversity statistics. Diversity unit is constellation.
+### This script generates zeta diversity statistics. Diversity unit is UID_complex
 ### Run script1 before running this script.
 ################
 
@@ -11,6 +11,7 @@ setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
 
 library("zetadiv")
 library("reshape2")
+library("ggplot2")
 
 ##########################
 # Read in the data, make appropriate data objects
@@ -28,124 +29,125 @@ data_2020 <- data_nona[which(data_nona$Date_year == "2020"),]
 data_2021 <- data_nona[which(data_nona$Date_year == "2021"),]
 data_2022 <- data_nona[which(data_nona$Date_year == "2022"),]
 
-#########################
-### Calculate zeta diversity manually
-# Zeta Diversity as a Concept and Metric That Unifies Incidence-Based Biodiversity Patterns, supplement
-# https://www.journals.uchicago.edu/doi/suppl/10.1086/678125/suppl_file/55316apa.pdf
-
-onehot_fun <- function(x){
-  ifelse(x != 0, 1, 0)}
-
-table_2010 <- as.data.frame.matrix(table(data_2010[,c("State","UID_simple")]))
-onehot_2010 <- t(data.frame(lapply(table_2010,onehot_fun)));colnames(onehot_2010) <- row.names(table_2010)
-table_2011 <- as.data.frame.matrix(table(data_2011[,c("State","UID_simple")]))
-onehot_2011 <- t(data.frame(lapply(table_2011,onehot_fun)));colnames(onehot_2011) <- row.names(table_2011)
-table_2012 <- as.data.frame.matrix(table(data_2012[,c("State","UID_simple")]))
-onehot_2012 <- t(data.frame(lapply(table_2012,onehot_fun)));colnames(onehot_2012) <- row.names(table_2012)
-table_2013 <- as.data.frame.matrix(table(data_2013[,c("State","UID_simple")]))
-onehot_2013 <- t(data.frame(lapply(table_2013,onehot_fun)));colnames(onehot_2013) <- row.names(table_2013)
-table_2014 <- as.data.frame.matrix(table(data_2014[,c("State","UID_simple")]))
-onehot_2014 <- t(data.frame(lapply(table_2014,onehot_fun)));colnames(onehot_2014) <- row.names(table_2014)
-table_2015 <- as.data.frame.matrix(table(data_2015[,c("State","UID_simple")]))
-onehot_2015 <- t(data.frame(lapply(table_2015,onehot_fun)));colnames(onehot_2015) <- row.names(table_2015)
-table_2016 <- as.data.frame.matrix(table(data_2016[,c("State","UID_simple")]))
-onehot_2016 <- t(data.frame(lapply(table_2016,onehot_fun)));colnames(onehot_2016) <- row.names(table_2016)
-table_2017 <- as.data.frame.matrix(table(data_2017[,c("State","UID_simple")]))
-onehot_2017 <- t(data.frame(lapply(table_2017,onehot_fun)));colnames(onehot_2017) <- row.names(table_2017)
-table_2018 <- as.data.frame.matrix(table(data_2018[,c("State","UID_simple")]))
-onehot_2018 <- t(data.frame(lapply(table_2018,onehot_fun)));colnames(onehot_2018) <- row.names(table_2018)
-table_2019 <- as.data.frame.matrix(table(data_2019[,c("State","UID_simple")]))
-onehot_2019 <- t(data.frame(lapply(table_2019,onehot_fun)));colnames(onehot_2019) <- row.names(table_2019)
-table_2020 <- as.data.frame.matrix(table(data_2020[,c("State","UID_simple")]))
-onehot_2020 <- t(data.frame(lapply(table_2020,onehot_fun)));colnames(onehot_2020) <- row.names(table_2020)
-table_2021 <- as.data.frame.matrix(table(data_2021[,c("State","UID_simple")]))
-onehot_2021 <- t(data.frame(lapply(table_2021,onehot_fun)));colnames(onehot_2021) <- row.names(table_2021)
-table_2022 <- as.data.frame.matrix(table(data_2022[,c("State","UID_simple")]))
-onehot_2022 <- t(data.frame(lapply(table_2022,onehot_fun)));colnames(onehot_2022) <- row.names(table_2022)
-table_full <- as.data.frame.matrix(table(data_nona[,c("State","UID_simple")]))
-onehot_full <- t(data.frame(lapply(table_full,onehot_fun)));colnames(onehot_full) <- row.names(table_full)
-
-nrow(table_2010);nrow(table_2011);nrow(table_2012);nrow(table_2013);nrow(table_2014);nrow(table_2015);nrow(table_2016);
-nrow(table_2017);nrow(table_2018);nrow(table_2019);nrow(table_2020);nrow(table_2021);nrow(table_2022);nrow(table_full)
-
-### Regarding 2010 ###
-#2010 has only 9 states in play. The next lowest number is 15.
-#I don't want to restrict my plots to a zeta order of 9, so I will be commenting out 2010 going forward.
-
-df_list <- list(onehot_2010, onehot_2011, onehot_2012, onehot_2013, onehot_2014, onehot_2015,
-  onehot_2016, onehot_2017, onehot_2018, onehot_2019, onehot_2020, onehot_2021, onehot_2022, onehot_full)
-val <- max(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
-  nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));val
-minval <- min(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
-  nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));minval
-
-data <- NULL
-df <- data.frame(matrix(ncol = 0, nrow = val))
-df_sd <- data.frame(matrix(ncol = 0, nrow = val))
-i <- 1
-
-for(i in 1:length(df_list)){
-  data <- as.data.frame(df_list[i])
-  
-  x<-dim(data)[2]
-  zeta<-numeric()
-  zeta_sd<-numeric()
-  u<-numeric()
-  
-  for(j in 1:x){
-    for(z in 1:1000){
-      sam<-sample(1:x,j,replace=FALSE)    #shuffles 1:x out of order
-      u[z]<-sum(apply(data[sam],1,prod))
-      } 
-    hist(u, breaks=40)
-    zeta[j] <- mean(u)
-    zeta_sd[j] <- sd(u)
-    }
-  length(zeta) <- val
-  length(zeta_sd) <- val
-  df <- cbind(df, zeta)
-  df_sd <- cbind(df_sd, zeta_sd)
-  # plot(1:x,zeta)
-}
-
-colnames(df) <- c("2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","Full")
-df$Zeta_Order <- 1:nrow(df)
-m <- melt(df, id="Zeta_Order")
-colnames(m) <- c("Zeta_Order","Year","Zeta")
-
-colnames(df_sd) <- c("2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","Full")
-df_sd$Zeta_Order <- 1:nrow(df_sd)
-m_sd <- melt(df_sd, id="Zeta_Order")
-colnames(m_sd) <- c("Zeta_Order","Year","SD")
-
-m_full <- merge(m, m_sd, by=c("Zeta_Order","Year"))
-m <- m_full[which(m_full$Year != "Full"),]
-
-plot_full <- ggplot(m_full, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
-  geom_line(aes(color=Year), size=1.5) + 
-  geom_point(aes(color=Year), size=2) +
-  xlim(0.95,17) +
-  labs(title="Change in Zeta Diversity over time",
-       x ="Zeta Order",
-       y = "Zeta Diversity") +
-  geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1));plot_full
-
-plot <- ggplot(m, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
-  geom_line(aes(color=Year), size=1.5) + 
-  geom_point(aes(color=Year), size=2) +
-  xlim(0.95,17) +
-  labs(title="Change in Zeta Diversity over time",
-       x ="Zeta Order",
-       y = "Zeta Diversity") +
-  geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1));plot
-
-pdf("Plots/script2_zeta.pdf")
-plot
-dev.off()
-
-pdf("Plots/script2_zeta_full.pdf")
-plot_full
-dev.off()
+# #########################
+# ### Calculate zeta diversity manually
+# ### Not used in this manuscript
+# # Zeta Diversity as a Concept and Metric That Unifies Incidence-Based Biodiversity Patterns, supplement
+# # https://www.journals.uchicago.edu/doi/suppl/10.1086/678125/suppl_file/55316apa.pdf
+# 
+# onehot_fun <- function(x){
+#   ifelse(x != 0, 1, 0)}
+# 
+# table_2010 <- as.data.frame.matrix(table(data_2010[,c("State","UID_complex")]))
+# onehot_2010 <- t(data.frame(lapply(table_2010,onehot_fun)));colnames(onehot_2010) <- row.names(table_2010)
+# table_2011 <- as.data.frame.matrix(table(data_2011[,c("State","UID_complex")]))
+# onehot_2011 <- t(data.frame(lapply(table_2011,onehot_fun)));colnames(onehot_2011) <- row.names(table_2011)
+# table_2012 <- as.data.frame.matrix(table(data_2012[,c("State","UID_complex")]))
+# onehot_2012 <- t(data.frame(lapply(table_2012,onehot_fun)));colnames(onehot_2012) <- row.names(table_2012)
+# table_2013 <- as.data.frame.matrix(table(data_2013[,c("State","UID_complex")]))
+# onehot_2013 <- t(data.frame(lapply(table_2013,onehot_fun)));colnames(onehot_2013) <- row.names(table_2013)
+# table_2014 <- as.data.frame.matrix(table(data_2014[,c("State","UID_complex")]))
+# onehot_2014 <- t(data.frame(lapply(table_2014,onehot_fun)));colnames(onehot_2014) <- row.names(table_2014)
+# table_2015 <- as.data.frame.matrix(table(data_2015[,c("State","UID_complex")]))
+# onehot_2015 <- t(data.frame(lapply(table_2015,onehot_fun)));colnames(onehot_2015) <- row.names(table_2015)
+# table_2016 <- as.data.frame.matrix(table(data_2016[,c("State","UID_complex")]))
+# onehot_2016 <- t(data.frame(lapply(table_2016,onehot_fun)));colnames(onehot_2016) <- row.names(table_2016)
+# table_2017 <- as.data.frame.matrix(table(data_2017[,c("State","UID_complex")]))
+# onehot_2017 <- t(data.frame(lapply(table_2017,onehot_fun)));colnames(onehot_2017) <- row.names(table_2017)
+# table_2018 <- as.data.frame.matrix(table(data_2018[,c("State","UID_complex")]))
+# onehot_2018 <- t(data.frame(lapply(table_2018,onehot_fun)));colnames(onehot_2018) <- row.names(table_2018)
+# table_2019 <- as.data.frame.matrix(table(data_2019[,c("State","UID_complex")]))
+# onehot_2019 <- t(data.frame(lapply(table_2019,onehot_fun)));colnames(onehot_2019) <- row.names(table_2019)
+# table_2020 <- as.data.frame.matrix(table(data_2020[,c("State","UID_complex")]))
+# onehot_2020 <- t(data.frame(lapply(table_2020,onehot_fun)));colnames(onehot_2020) <- row.names(table_2020)
+# table_2021 <- as.data.frame.matrix(table(data_2021[,c("State","UID_complex")]))
+# onehot_2021 <- t(data.frame(lapply(table_2021,onehot_fun)));colnames(onehot_2021) <- row.names(table_2021)
+# table_2022 <- as.data.frame.matrix(table(data_2022[,c("State","UID_complex")]))
+# onehot_2022 <- t(data.frame(lapply(table_2022,onehot_fun)));colnames(onehot_2022) <- row.names(table_2022)
+# table_full <- as.data.frame.matrix(table(data_nona[,c("State","UID_complex")]))
+# onehot_full <- t(data.frame(lapply(table_full,onehot_fun)));colnames(onehot_full) <- row.names(table_full)
+# 
+# nrow(table_2010);nrow(table_2011);nrow(table_2012);nrow(table_2013);nrow(table_2014);nrow(table_2015);nrow(table_2016);
+# nrow(table_2017);nrow(table_2018);nrow(table_2019);nrow(table_2020);nrow(table_2021);nrow(table_2022);nrow(table_full)
+# 
+# ### Regarding 2010 ###
+# #2010 has only 9 states in play. The next lowest number is 15.
+# #I don't want to restrict my plots to a zeta order of 9, so I will be commenting out 2010 going forward.
+# 
+# df_list <- list(onehot_2010, onehot_2011, onehot_2012, onehot_2013, onehot_2014, onehot_2015,
+#                 onehot_2016, onehot_2017, onehot_2018, onehot_2019, onehot_2020, onehot_2021, onehot_2022, onehot_full)
+# val <- max(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
+#              nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));val
+# minval <- min(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
+#                 nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));minval
+# 
+# data <- NULL
+# df <- data.frame(matrix(ncol = 0, nrow = val))
+# df_sd <- data.frame(matrix(ncol = 0, nrow = val))
+# i <- 1
+# 
+# for(i in 1:length(df_list)){
+#   data <- as.data.frame(df_list[i])
+#   
+#   x<-dim(data)[2]
+#   zeta<-numeric()
+#   zeta_sd<-numeric()
+#   u<-numeric()
+#   
+#   for(j in 1:x){
+#     for(z in 1:1000){
+#       sam<-sample(1:x,j,replace=FALSE)    #shuffles 1:x out of order
+#       u[z]<-sum(apply(data[sam],1,prod))
+#     } 
+#     hist(u, breaks=40)
+#     zeta[j] <- mean(u)
+#     zeta_sd[j] <- sd(u)
+#   }
+#   length(zeta) <- val
+#   length(zeta_sd) <- val
+#   df <- cbind(df, zeta)
+#   df_sd <- cbind(df_sd, zeta_sd)
+#   # plot(1:x,zeta)
+# }
+# 
+# colnames(df) <- c("2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","Full")
+# df$Zeta_Order <- 1:nrow(df)
+# m <- melt(df, id="Zeta_Order")
+# colnames(m) <- c("Zeta_Order","Year","Zeta")
+# 
+# colnames(df_sd) <- c("2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","Full")
+# df_sd$Zeta_Order <- 1:nrow(df_sd)
+# m_sd <- melt(df_sd, id="Zeta_Order")
+# colnames(m_sd) <- c("Zeta_Order","Year","SD")
+# 
+# m_full <- merge(m, m_sd, by=c("Zeta_Order","Year"))
+# m <- m_full[which(m_full$Year != "Full"),]
+# 
+# plot_full <- ggplot(m_full, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
+#   geom_line(aes(color=Year), size=1.5) + 
+#   geom_point(aes(color=Year), size=2) +
+#   xlim(0.95,17) +
+#   labs(title="Change in Zeta Diversity over time",
+#        x ="Zeta Order",
+#        y = "Zeta Diversity") +
+#   geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1));plot_full
+# 
+# plot <- ggplot(m, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
+#   geom_line(aes(color=Year), size=1.5) + 
+#   geom_point(aes(color=Year), size=2) +
+#   xlim(0.95,17) +
+#   labs(title="Change in Zeta Diversity over time",
+#        x ="Zeta Order",
+#        y = "Zeta Diversity") +
+#   geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1));plot
+# 
+# pdf("Plots/script2.5_zeta.pdf")
+# plot
+# dev.off()
+# 
+# pdf("Plots/script2.5_zeta_full.pdf")
+# plot_full
+# dev.off()
 
 ##########################
 ### Calculate zeta diversity with the R package "zetadiv"
@@ -229,21 +231,21 @@ Plot.zeta.decline(zeta.decline_2021)
 Plot.zeta.decline(zeta.decline_2022)
 Plot.zeta.decline(zeta.decline_full)
 
-pdf("Plots/script2_zeta_decline_2010.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2010);dev.off()
-pdf("Plots/script2_zeta_decline_2011.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2011);dev.off()
-pdf("Plots/script2_zeta_decline_2012.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2012);dev.off()
-pdf("Plots/script2_zeta_decline_2013.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2013);dev.off()
-pdf("Plots/script2_zeta_decline_2014.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2014);dev.off()
-pdf("Plots/script2_zeta_decline_2015.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2015);dev.off()
-pdf("Plots/script2_zeta_decline_2016.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2016);dev.off()
-pdf("Plots/script2_zeta_decline_2017.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2017);dev.off()
-pdf("Plots/script2_zeta_decline_2018.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2018);dev.off()
-pdf("Plots/script2_zeta_decline_2019.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2019);dev.off()
-pdf("Plots/script2_zeta_decline_2020.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2020);dev.off()
-pdf("Plots/script2_zeta_decline_2021.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2021);dev.off()
-pdf("Plots/script2_zeta_decline_2022.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2022);dev.off()
-pdf("Plots/script2_zeta_decline_full.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_full);dev.off()
-png("Plots/script2_zeta_decline_full.png", height=200, width=800);Plot.zeta.decline(zeta.decline_full);dev.off()
+pdf("Plots/script2.5_zeta_decline_2010.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2010);dev.off()
+pdf("Plots/script2.5_zeta_decline_2011.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2011);dev.off()
+pdf("Plots/script2.5_zeta_decline_2012.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2012);dev.off()
+pdf("Plots/script2.5_zeta_decline_2013.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2013);dev.off()
+pdf("Plots/script2.5_zeta_decline_2014.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2014);dev.off()
+pdf("Plots/script2.5_zeta_decline_2015.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2015);dev.off()
+pdf("Plots/script2.5_zeta_decline_2016.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2016);dev.off()
+pdf("Plots/script2.5_zeta_decline_2017.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2017);dev.off()
+pdf("Plots/script2.5_zeta_decline_2018.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2018);dev.off()
+pdf("Plots/script2.5_zeta_decline_2019.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2019);dev.off()
+pdf("Plots/script2.5_zeta_decline_2020.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2020);dev.off()
+pdf("Plots/script2.5_zeta_decline_2021.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2021);dev.off()
+pdf("Plots/script2.5_zeta_decline_2022.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2022);dev.off()
+pdf("Plots/script2.5_zeta_decline_full.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_full);dev.off()
+png("Plots/script2.5_zeta_decline_full.png", height=200, width=800);Plot.zeta.decline(zeta.decline_full);dev.off()
 
 ####
 
@@ -263,21 +265,21 @@ length(zeta.decline_2022$zeta.val) <- length(zeta.decline_2022$zeta.val.sd) <- v
 length(zeta.decline_full$zeta.val) <- length(zeta.decline_full$zeta.val.sd) <- val
 
 test <- cbind(
-      c(1:val), 
-      zeta.decline_2010$zeta.val,
-      zeta.decline_2011$zeta.val,
-      zeta.decline_2012$zeta.val,
-      zeta.decline_2013$zeta.val,
-      zeta.decline_2014$zeta.val,
-      zeta.decline_2015$zeta.val,
-      zeta.decline_2016$zeta.val,
-      zeta.decline_2017$zeta.val,
-      zeta.decline_2018$zeta.val,
-      zeta.decline_2019$zeta.val,
-      zeta.decline_2020$zeta.val,
-      zeta.decline_2021$zeta.val,
-      zeta.decline_2022$zeta.val,
-      zeta.decline_full$zeta.val)
+  c(1:val), 
+  zeta.decline_2010$zeta.val,
+  zeta.decline_2011$zeta.val,
+  zeta.decline_2012$zeta.val,
+  zeta.decline_2013$zeta.val,
+  zeta.decline_2014$zeta.val,
+  zeta.decline_2015$zeta.val,
+  zeta.decline_2016$zeta.val,
+  zeta.decline_2017$zeta.val,
+  zeta.decline_2018$zeta.val,
+  zeta.decline_2019$zeta.val,
+  zeta.decline_2020$zeta.val,
+  zeta.decline_2021$zeta.val,
+  zeta.decline_2022$zeta.val,
+  zeta.decline_full$zeta.val)
 colnames(test) <- c("order","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","full")
 test_melt <- melt(test)
 colnames(test_melt) <- c("Zeta_Order","Year","Zeta")
@@ -309,8 +311,8 @@ test_merge <- test_merge_full[which(test_merge_full$Year != "full"),]
 plot2_full <- ggplot(test_merge_full, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
   geom_line(aes(color=Year), size=1.5) + 
   geom_point(aes(color=Year), size=2) +
-  xlim(0.95,25) +
-  ylim(0,8) +
+  xlim(0.95,16) +
+  # ylim(0,8) +
   labs(title="Change in Zeta Diversity over time",
        x ="Zeta Order",
        y = "Zeta Diversity") +
@@ -333,17 +335,17 @@ plot2 <- ggplot(test_merge, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
         axis.text.x = element_text(size = 22),
         text = element_text(size = 26));plot2
 
-pdf("Plots/script2_zeta_betterversion_full.pdf")
+pdf("Plots/script2.5_zeta_betterversion_full.pdf")
 plot2_full
 dev.off()
-png("Plots/script2_zeta_betterversion_full.png", width=700, height=550)
+png("Plots/script2.5_zeta_betterversion_full.png", width=700, height=550)
 plot2_full
 dev.off()
 
-pdf("Plots/script2_zeta_betterversion.pdf")
+pdf("Plots/script2.5_zeta_betterversion.pdf")
 plot2
 dev.off()
-png("Plots/script2_zeta_betterversion.png", width=1450, height=550)
+png("Plots/script2.5_zeta_betterversion.png", width=650, height=550)
 plot2
 dev.off()
 
@@ -388,8 +390,8 @@ test_melt$Ratio <- ifelse(is.na(test_melt$Ratio), 0, test_melt$Ratio)
 plot3 <- ggplot(test_melt, aes(y=Ratio, x=Zeta_Order)) +
   geom_line(aes(color=Year), size=1) + 
   geom_point(aes(color=Year), size=2) +
-  xlim(0.95,20) +
-  ylim(0,1) +
+  xlim(0.95,16) +
+  # ylim(0,8) +
   geom_smooth(se = T, size = 2) +
   labs(title="Ratio of Zeta Diversity decline",
        x ="Zeta Order",
@@ -400,10 +402,10 @@ plot3 <- ggplot(test_melt, aes(y=Ratio, x=Zeta_Order)) +
         axis.text.x = element_text(size = 22),
         text = element_text(size = 26));plot3
 
-pdf("Plots/script2_zeta_ratio.pdf")
+pdf("Plots/script2.5_zeta_ratio.pdf")
 plot3
 dev.off()
-png("Plots/script2_zeta_ratio.png", width=700, height=550)
+png("Plots/script2.5_zeta_ratio.png", width=700, height=550)
 plot3
 dev.off()
 
@@ -419,12 +421,8 @@ get.line.intercept <- function(x1, y1, x2, y2) {y1 - (y2 - y1)*x1 / (x2 - x1)}
 aucdf <- data.frame()
 test_merge_temp <- NULL
 for(i in seq(2010,2022)){
-  # i <- 2011
   test_merge_temp <- test_merge[which(test_merge$Year == i & !is.na(test_merge$Zeta)),];dim(test_merge);dim(test_merge_temp)
   test_merge_temp <- test_merge_temp[order(test_merge_temp$Zeta_Order),]
-  
-  ####
-  # quantify Zeta by AUC
   st.lines <- as.data.frame(t(sapply(1:(nrow(test_merge_temp)-1),
                                      function(i) c(
                                        m=get.line.slope(test_merge_temp$Zeta_Order[i],test_merge_temp$Zeta[i], test_merge_temp$Zeta_Order[i+1], test_merge_temp$Zeta[i+1]),
@@ -433,14 +431,7 @@ for(i in seq(2010,2022)){
                                        endx=test_merge_temp$Zeta_Order[i+1]))))
   areas <- apply(st.lines, 1, function(l)
     integrate(f=function(x)l['m']*x+l['c'],
-    lower = l['startx'], upper=l['endx'])$value)
-  ####
-  
-  # #####
-  # # quantify Zeta by sum of values
-  # areas <- test_merge_temp$Zeta
-  # #####
-  
+              lower = l['startx'], upper=l['endx'])$value)
   print(sum(areas))
   aucdf <- rbind(aucdf, c(i,sum(areas)))
 }
@@ -450,13 +441,17 @@ plot5 <- ggplot(aucdf, aes(y=AUC, x=Year)) +
   geom_point(size=2) +
   geom_smooth(method='loess') +
   scale_x_continuous(breaks = seq(2010,2022)) +
+  theme(legend.title=element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.text.x = element_text(size = 22, angle=45, vjust = 1, hjust = 1),
+        text = element_text(size = 26)) +
   labs(title="Zeta AUC",
        x ="Year",
        y = "AUC");plot5
 
-pdf("Plots/script2_zeta_auc.pdf")
+pdf("Plots/script2.5_zeta_auc.pdf")
 plot5
 dev.off()
-png("Plots/script2_zeta_auc.png")
+png("Plots/script2.5_zeta_auc.png", width=650, height=550)
 plot5
 dev.off()
