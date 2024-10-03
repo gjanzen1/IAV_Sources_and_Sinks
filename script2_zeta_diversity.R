@@ -4,7 +4,7 @@
 ################
 
 setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
-# load("IAV_Sources_and_Sinks.RData")
+load("IAV_Sources_and_Sinks.RData")
 # save.image("IAV_Sources_and_Sinks.RData")
 
 ##########################
@@ -141,11 +141,11 @@ data_2022 <- data_nona[which(data_nona$Date_year == "2022"),]
 #        y = "Zeta Diversity") +
 #   geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1));plot
 # 
-# pdf("Plots/script2.5_zeta.pdf")
+# pdf("Plots/script2_zeta.pdf")
 # plot
 # dev.off()
 # 
-# pdf("Plots/script2.5_zeta_full.pdf")
+# pdf("Plots/script2_zeta_full.pdf")
 # plot_full
 # dev.off()
 
@@ -231,21 +231,21 @@ Plot.zeta.decline(zeta.decline_2021)
 Plot.zeta.decline(zeta.decline_2022)
 Plot.zeta.decline(zeta.decline_full)
 
-pdf("Plots/script2.5_zeta_decline_2010.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2010);dev.off()
-pdf("Plots/script2.5_zeta_decline_2011.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2011);dev.off()
-pdf("Plots/script2.5_zeta_decline_2012.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2012);dev.off()
-pdf("Plots/script2.5_zeta_decline_2013.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2013);dev.off()
-pdf("Plots/script2.5_zeta_decline_2014.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2014);dev.off()
-pdf("Plots/script2.5_zeta_decline_2015.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2015);dev.off()
-pdf("Plots/script2.5_zeta_decline_2016.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2016);dev.off()
-pdf("Plots/script2.5_zeta_decline_2017.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2017);dev.off()
-pdf("Plots/script2.5_zeta_decline_2018.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2018);dev.off()
-pdf("Plots/script2.5_zeta_decline_2019.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2019);dev.off()
-pdf("Plots/script2.5_zeta_decline_2020.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2020);dev.off()
-pdf("Plots/script2.5_zeta_decline_2021.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2021);dev.off()
-pdf("Plots/script2.5_zeta_decline_2022.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2022);dev.off()
-pdf("Plots/script2.5_zeta_decline_full.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_full);dev.off()
-png("Plots/script2.5_zeta_decline_full.png", height=200, width=800);Plot.zeta.decline(zeta.decline_full);dev.off()
+pdf("Plots/script2_zeta_decline_2010.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2010);dev.off()
+pdf("Plots/script2_zeta_decline_2011.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2011);dev.off()
+pdf("Plots/script2_zeta_decline_2012.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2012);dev.off()
+pdf("Plots/script2_zeta_decline_2013.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2013);dev.off()
+pdf("Plots/script2_zeta_decline_2014.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2014);dev.off()
+pdf("Plots/script2_zeta_decline_2015.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2015);dev.off()
+pdf("Plots/script2_zeta_decline_2016.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2016);dev.off()
+pdf("Plots/script2_zeta_decline_2017.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2017);dev.off()
+pdf("Plots/script2_zeta_decline_2018.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2018);dev.off()
+pdf("Plots/script2_zeta_decline_2019.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2019);dev.off()
+pdf("Plots/script2_zeta_decline_2020.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2020);dev.off()
+pdf("Plots/script2_zeta_decline_2021.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2021);dev.off()
+pdf("Plots/script2_zeta_decline_2022.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2022);dev.off()
+pdf("Plots/script2_zeta_decline_full.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_full);dev.off()
+png("Plots/script2_zeta_decline_full.png", height=200, width=800);Plot.zeta.decline(zeta.decline_full);dev.off()
 
 ####
 
@@ -335,17 +335,17 @@ plot2 <- ggplot(test_merge, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
         axis.text.x = element_text(size = 22),
         text = element_text(size = 26));plot2
 
-pdf("Plots/script2.5_zeta_betterversion_full.pdf")
+pdf("Plots/script2_zeta_betterversion_full.pdf")
 plot2_full
 dev.off()
-png("Plots/script2.5_zeta_betterversion_full.png", width=700, height=550)
+png("Plots/script2_zeta_betterversion_full.png", width=700, height=550)
 plot2_full
 dev.off()
 
-pdf("Plots/script2.5_zeta_betterversion.pdf")
+pdf("Plots/script2_zeta_betterversion.pdf")
 plot2
 dev.off()
-png("Plots/script2.5_zeta_betterversion.png", width=650, height=550)
+png("Plots/script2_zeta_betterversion.png", width=650, height=550)
 plot2
 dev.off()
 
@@ -402,10 +402,10 @@ plot3 <- ggplot(test_melt, aes(y=Ratio, x=Zeta_Order)) +
         axis.text.x = element_text(size = 22),
         text = element_text(size = 26));plot3
 
-pdf("Plots/script2.5_zeta_ratio.pdf")
+pdf("Plots/script2_zeta_ratio.pdf")
 plot3
 dev.off()
-png("Plots/script2.5_zeta_ratio.png", width=700, height=550)
+png("Plots/script2_zeta_ratio.png", width=700, height=550)
 plot3
 dev.off()
 
@@ -449,9 +449,10 @@ plot5 <- ggplot(aucdf, aes(y=AUC, x=Year)) +
        x ="Year",
        y = "AUC");plot5
 
-pdf("Plots/script2.5_zeta_auc.pdf")
+pdf("Plots/script2_zeta_auc.pdf")
 plot5
 dev.off()
-png("Plots/script2.5_zeta_auc.png", width=650, height=550)
+png("Plots/script2_zeta_auc.png", width=650, height=550)
 plot5
 dev.off()
+
