@@ -12,7 +12,6 @@ This manuscript summarizes 13 years of influenza A virus evolution in the swine 
 
 * These scripts were run using R version 4.2.0 (2022-04-22 ucrt) on Windows x86_64.
 
-
 ## Outline
 
 ### Script 1
@@ -27,12 +26,6 @@ This script establishes a time series of detections and runs analyses and looks 
 ### Script 4
 This script uses Markov Chains to model state-to-state IAV transition probabilities, provides code for testing real and hypothetical IAV strain detection orders, and statistic to evaluate model prediction performance.
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
 ### Microreact
 The file microreact_input_5y.csv is written by script 1. The microreact figure in this manuscript can be made by following these steps:
  * Go to [the microreact website](https://microreact.org/upload).
@@ -44,7 +37,6 @@ The file microreact_input_5y.csv is written by script 1. The microreact figure i
  * To format the map, select the sliders icon in that window and adjust as desired.
    
 ## Authors
-
 Garrett M. Janzen
 [@garrettjanzen](https://twitter.com/garrettjanzen)
 
