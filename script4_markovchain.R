@@ -112,29 +112,29 @@ hmplot_repeat <- ggplot(tm_melt_repeat, aes(Destination, Origin, fill = Probabil
   geom_tile() +
   labs(title="Markov chain transition matrix");hmplot_repeat
 
-pdf("Plots/script6_network.pdf")
+pdf("Plots/script4_network.pdf")
 plot(est)
 dev.off()
-pdf("Plots/script6_tm.pdf", width=9.5)
+pdf("Plots/script4_tm.pdf", width=9.5)
 hmplot
 dev.off()
-png("Plots/script6_network.png")
+png("Plots/script4_network.png")
 plot(est)
 dev.off()
-png("Plots/script6_tm.png", width=750)
+png("Plots/script4_tm.png", width=750)
 hmplot
 dev.off()
 
-pdf("Plots/script6_network_repeat.pdf")
+pdf("Plots/script4_network_repeat.pdf")
 plot(est_repeat)
 dev.off()
-pdf("Plots/script6_tm_repeat.pdf", width=9.5)
+pdf("Plots/script4_tm_repeat.pdf", width=9.5)
 hmplot_repeat
 dev.off()
-png("Plots/script6_network_repeat.png")
+png("Plots/script4_network_repeat.png")
 plot(est_repeat)
 dev.off()
-png("Plots/script6_tm_repeat.png", width=750)
+png("Plots/script4_tm_repeat.png", width=750)
 hmplot_repeat
 dev.off()
 
@@ -142,47 +142,47 @@ tm_thresh <- ifelse(tm < 0.25, 0, tm)
 tm_thresh_repeat <- ifelse(tm_repeat < 0.25, 0, tm_repeat)
 
 dev.off()
-pdf("Plots/script6_visnetwork.pdf")
+pdf("Plots/script4_visnetwork.pdf")
 vis <- plotmat(round(t(tm), digits=2), relsize=1.1,
                box.type="circle", box.size=0.02,
                shadow.col="grey", shadow.size=0.005);vis
 dev.off()
-pdf("Plots/script6_visnetwork_thresh.pdf")
+pdf("Plots/script4_visnetwork_thresh.pdf")
 vis_thresh <- plotmat(round(t(tm_thresh), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005);vis_thresh
 dev.off()
 dev.off()
-png("Plots/script6_visnetwork.png")
+png("Plots/script4_visnetwork.png")
 vis <- plotmat(round(t(tm), digits=2), relsize=1.1,
                box.type="circle", box.size=0.02,
                shadow.col="grey", shadow.size=0.005);vis
 dev.off()
-png("Plots/script6_visnetwork_thresh.png")
+png("Plots/script4_visnetwork_thresh.png")
 vis_thresh <- plotmat(round(t(tm_thresh), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005);vis_thresh
 dev.off()
 
 dev.off()
-pdf("Plots/script6_visnetwork_repeat.pdf")
+pdf("Plots/script4_visnetwork_repeat.pdf")
 vis_repeat <- plotmat(round(t(tm_repeat), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005);vis_repeat
 dev.off()
-pdf("Plots/script6_visnetwork_thresh_repeat.pdf")
+pdf("Plots/script4_visnetwork_thresh_repeat.pdf")
 vis_thresh_repeat <- plotmat(round(t(tm_thresh_repeat), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_thresh_repeat
 dev.off()
 
 dev.off()
-png("Plots/script6_visnetwork_repeat.png")
+png("Plots/script4_visnetwork_repeat.png")
 vis_repeat <- plotmat(round(t(tm_repeat), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005);vis_repeat
 dev.off()
-png("Plots/script6_visnetwork_thresh_repeat.png")
+png("Plots/script4_visnetwork_thresh_repeat.png")
 vis_thresh_repeat <- plotmat(round(t(tm_thresh_repeat), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_thresh_repeat
@@ -200,13 +200,13 @@ tm_reduced <- tm_reduced[which(colnames(tm_reduced) %in% mcstatereduced), which(
 tm_reduced_thresh <- tm_reduced
 tm_reduced_thresh <- ifelse(tm_reduced <= 0.14, 0, tm_reduced) 
 
-pdf("Plots/script6_visnetwork_thresh_reduced.pdf")
+pdf("Plots/script4_visnetwork_thresh_reduced.pdf")
 vis_thresh <- plotmat(round(t(tm_reduced_thresh), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005, cex.txt = 1.3, dtext = 0.6,
                       cex.main = 1.2, txt.col="black",box.col="beige", lcol="black");vis_thresh
 dev.off()
-png("Plots/script6_visnetwork_thresh_reduced.png", width=1100, height=750)
+png("Plots/script4_visnetwork_thresh_reduced.png", width=1100, height=750)
 vis_thresh <- plotmat(round(t(tm_reduced_thresh), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005, cex.txt = 1.3, dtext = 0.6,
@@ -240,29 +240,29 @@ hmplot_repeat_xx <- ggplot(tm_melt_repeat_xx_noxxorigin, aes(Destination, Origin
   geom_tile() +
   labs(title="Markov chain transition matrix");hmplot_repeat_xx
 
-pdf("Plots/script6_network_xx.pdf")
+pdf("Plots/script4_network_xx.pdf")
 plot(est_xx)
 dev.off()
-pdf("Plots/script6_tm_xx.pdf", width=9.5)
+pdf("Plots/script4_tm_xx.pdf", width=9.5)
 hmplot_xx
 dev.off()
-png("Plots/script6_network_xx.png")
+png("Plots/script4_network_xx.png")
 plot(est_xx)
 dev.off()
-png("Plots/script6_tm_xx.png", width=750)
+png("Plots/script4_tm_xx.png", width=750)
 hmplot_xx
 dev.off()
 
-pdf("Plots/script6_network_repeat_xx.pdf")
+pdf("Plots/script4_network_repeat_xx.pdf")
 plot(est_repeat_xx)
 dev.off()
-pdf("Plots/script6_tm_repeat_xx.pdf", width=9.5)
+pdf("Plots/script4_tm_repeat_xx.pdf", width=9.5)
 hmplot_repeat_xx
 dev.off()
-png("Plots/script6_network_repeat_xx.png")
+png("Plots/script4_network_repeat_xx.png")
 plot(est_repeat_xx)
 dev.off()
-png("Plots/script6_tm_repeat_xx.png", width=750)
+png("Plots/script4_tm_repeat_xx.png", width=750)
 hmplot_repeat_xx
 dev.off()
 
@@ -270,24 +270,24 @@ tm_thresh_xx <- ifelse(tm_xx < 0.25, 0, tm_xx)
 tm_thresh_repeat_xx <- ifelse(tm_repeat_xx < 0.25, 0, tm_repeat_xx)
 
 dev.off()
-pdf("Plots/script6_visnetwork_xx.pdf")
+pdf("Plots/script4_visnetwork_xx.pdf")
 vis_xx <- plotmat(round(t(tm_xx), digits=2), relsize=1.1,
                   box.type="circle", box.size=0.02,
                   shadow.col="grey", shadow.size=0.005);vis_xx
 dev.off()
-pdf("Plots/script6_visnetwork_thresh_xx.pdf")
+pdf("Plots/script4_visnetwork_thresh_xx.pdf")
 vis_thresh_xx <- plotmat(round(t(tm_thresh_xx), digits=2), relsize=1.1,
                          box.type="circle", box.size=0.02,
                          shadow.col="grey", shadow.size=0.005);vis_thresh_xx
 dev.off()
 
 dev.off()
-png("Plots/script6_visnetwork_xx.png")
+png("Plots/script4_visnetwork_xx.png")
 vis_xx <- plotmat(round(t(tm_xx), digits=2), relsize=1.1,
                   box.type="circle", box.size=0.02,
                   shadow.col="grey", shadow.size=0.005);vis_xx
 dev.off()
-png("Plots/script6_visnetwork_thresh_xx.png")
+png("Plots/script4_visnetwork_thresh_xx.png")
 vis_thresh_xx <- plotmat(round(t(tm_thresh_xx), digits=2), relsize=1.1,
                          box.type="circle", box.size=0.02,
                          shadow.col="grey", shadow.size=0.005);vis_thresh_xx
@@ -394,31 +394,31 @@ hmplot_repeat_subset <- ggplot(tm_melt_repeat_subset, aes(Destination, Origin, f
   theme(axis.text.y = element_text(size = 22),
         text = element_text(size=26));hmplot_repeat_subset
 
-pdf("Plots/script6_network_subset.pdf")
+pdf("Plots/script4_network_subset.pdf")
 plot(est_subset)
 dev.off()
-pdf("Plots/script6_tm_subset.pdf", width=9.5)
+pdf("Plots/script4_tm_subset.pdf", width=9.5)
 hmplot_subset
 dev.off()
 
-pdf("Plots/script6_network_repeat_subset.pdf")
+pdf("Plots/script4_network_repeat_subset.pdf")
 plot(est_repeat_subset)
 dev.off()
-pdf("Plots/script6_tm_repeat_subset.pdf", width=9.5)
+pdf("Plots/script4_tm_repeat_subset.pdf", width=9.5)
 hmplot_repeat_subset
 dev.off()
 
-png("Plots/script6_network_subset.png", width=750, height=750)
+png("Plots/script4_network_subset.png", width=750, height=750)
 plot(est_subset)
 dev.off()
-png("Plots/script6_tm_subset.png", width=750, height=650)
+png("Plots/script4_tm_subset.png", width=750, height=650)
 hmplot_subset
 dev.off()
 
-png("Plots/script6_network_repeat_subset.png", width=750, height=750)
+png("Plots/script4_network_repeat_subset.png", width=750, height=750)
 plot(est_repeat_subset)
 dev.off()
-png("Plots/script6_tm_repeat_subset.png", width=750, height=650)
+png("Plots/script4_tm_repeat_subset.png", width=750, height=650)
 hmplot_repeat_subset
 dev.off()
 
@@ -444,31 +444,31 @@ hmplot_repeat_subset_xx <- ggplot(tm_melt_repeat_subset_xx, aes(Destination, Ori
   theme(axis.text.y = element_text(size = 22),
         text = element_text(size=26));hmplot_repeat_subset_xx
 
-pdf("Plots/script6_network_subset_xx.pdf")
+pdf("Plots/script4_network_subset_xx.pdf")
 plot(est_subset_xx)
 dev.off()
-pdf("Plots/script6_tm_subset_xx.pdf", width=9.5)
+pdf("Plots/script4_tm_subset_xx.pdf", width=9.5)
 hmplot_subset_xx
 dev.off()
 
-pdf("Plots/script6_network_repeat_subset_xx.pdf")
+pdf("Plots/script4_network_repeat_subset_xx.pdf")
 plot(est_repeat_subset_xx)
 dev.off()
-pdf("Plots/script6_tm_repeat_subset_xx.pdf", width=9.5)
+pdf("Plots/script4_tm_repeat_subset_xx.pdf", width=9.5)
 hmplot_repeat_subset_xx
 dev.off()
 
-png("Plots/script6_network_subset_xx.png", width=750, height=750)
+png("Plots/script4_network_subset_xx.png", width=750, height=750)
 plot(est_subset_xx)
 dev.off()
-png("Plots/script6_tm_subset_xx.png", width=750, height=650)
+png("Plots/script4_tm_subset_xx.png", width=750, height=650)
 hmplot_subset_xx
 dev.off()
 
-png("Plots/script6_network_repeat_subset_xx.png", width=750, height=750)
+png("Plots/script4_network_repeat_subset_xx.png", width=750, height=750)
 plot(est_repeat_subset_xx)
 dev.off()
-png("Plots/script6_tm_repeat_subset_xx.png", width=750, height=650)
+png("Plots/script4_tm_repeat_subset_xx.png", width=750, height=650)
 hmplot_repeat_subset_xx
 dev.off()
 
@@ -483,70 +483,70 @@ tm_thresh_subset <- ifelse(tm_subset <= 0.18, 0, tm_subset) #mean(tm_subset) + s
 tm_thresh_repeat_subset <- ifelse(tm_repeat_subset <= 0.18, 0, tm_repeat_subset) #mean(tm_subset) + sd(tm_subset)
 
 dev.off()
-pdf("Plots/script6_visnetwork_subset.pdf")
+pdf("Plots/script4_visnetwork_subset.pdf")
 vis_subset <- plotmat(round(t(tm_subset), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005);vis_subset
 dev.off()
-pdf("Plots/script6_visnetwork_thresh_subset.pdf")
+pdf("Plots/script4_visnetwork_thresh_subset.pdf")
 vis_thresh_subset <- plotmat(round(t(tm_thresh_subset), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_thresh_subset
 dev.off()
 dev.off()
-png("Plots/script6_visnetwork_subset.png")
+png("Plots/script4_visnetwork_subset.png")
 vis_subset <- plotmat(round(t(tm_subset), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005);vis_subset
 dev.off()
-png("Plots/script6_visnetwork_thresh_subset.png")
+png("Plots/script4_visnetwork_thresh_subset.png")
 vis_thresh_subset <- plotmat(round(t(tm_thresh_subset), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_thresh_subset
 dev.off()
 
 dev.off()
-pdf("Plots/script6_visnetwork_repeat_subset.pdf")
+pdf("Plots/script4_visnetwork_repeat_subset.pdf")
 vis_repeat_subset <- plotmat(round(t(tm_repeat_subset), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_repeat_subset
 dev.off()
-pdf("Plots/script6_visnetwork_thresh_repeat_subset.pdf")
+pdf("Plots/script4_visnetwork_thresh_repeat_subset.pdf")
 vis_thresh_repeat_subset <- plotmat(round(t(tm_thresh_repeat_subset), digits=2), relsize=1.1,
                                     box.type="circle", box.size=0.02,
                                     shadow.col="grey", shadow.size=0.005);vis_thresh_repeat_subset
 dev.off()
 dev.off()
-png("Plots/script6_visnetwork_repeat_subset.png")
+png("Plots/script4_visnetwork_repeat_subset.png")
 vis_repeat_subset <- plotmat(round(t(tm_repeat_subset), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_repeat_subset
 dev.off()
-png("Plots/script6_visnetwork_thresh_repeat_subset.png")
+png("Plots/script4_visnetwork_thresh_repeat_subset.png")
 vis_thresh_repeat_subset <- plotmat(round(t(tm_thresh_repeat_subset), digits=2), relsize=1.1,
                                     box.type="circle", box.size=0.02,
                                     shadow.col="grey", shadow.size=0.005);vis_thresh_repeat_subset
 dev.off()
 
 dev.off()
-png("Plots/script6_visnetwork_subset.png", width=750, height=750)
+png("Plots/script4_visnetwork_subset.png", width=750, height=750)
 vis_subset <- plotmat(round(t(tm_subset), digits=2), relsize=1.1,
                       box.type="circle", box.size=0.02,
                       shadow.col="grey", shadow.size=0.005);vis_subset
 dev.off()
-png("Plots/script6_visnetwork_thresh_subset.png", width=750, height=750)
+png("Plots/script4_visnetwork_thresh_subset.png", width=750, height=750)
 vis_thresh_subset <- plotmat(round(t(tm_thresh_subset), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_thresh_subset
 dev.off()
 
 dev.off()
-png("Plots/script6_visnetwork_repeat_subset.png", width=750, height=750)
+png("Plots/script4_visnetwork_repeat_subset.png", width=750, height=750)
 vis_repeat_subset <- plotmat(round(t(tm_repeat_subset), digits=2), relsize=1.1,
                              box.type="circle", box.size=0.02,
                              shadow.col="grey", shadow.size=0.005);vis_repeat_subset
 dev.off()
-png("Plots/script6_visnetwork_thresh_repeat_subset.png", width=950, height=950)
+png("Plots/script4_visnetwork_thresh_repeat_subset.png", width=950, height=950)
 vis_thresh_repeat_subset <- plotmat(round(t(tm_thresh_repeat_subset), digits=2), relsize=1.1,
                                     box.type="circle", box.size=0.02,
                                     shadow.col="grey", shadow.size=0.005,
@@ -560,46 +560,46 @@ tm_thresh_subset_xx <- ifelse(tm_subset_xx <= 0.12, 0, tm_subset_xx) #mean(tm_su
 tm_thresh_repeat_subset_xx <- ifelse(tm_repeat_subset_xx <= 0.12, 0, tm_repeat_subset_xx) #mean(tm_subset) + sd(tm_subset)
 
 dev.off()
-pdf("Plots/script6_visnetwork_subset_xx.pdf")
+pdf("Plots/script4_visnetwork_subset_xx.pdf")
 vis_subset_xx <- plotmat(round(t(tm_subset_xx), digits=2), relsize=1.1,
                          box.type="circle", box.size=0.02,
                          shadow.col="grey", shadow.size=0.005);vis_subset_xx
 dev.off()
-pdf("Plots/script6_visnetwork_thresh_subset_xx.pdf")
+pdf("Plots/script4_visnetwork_thresh_subset_xx.pdf")
 vis_thresh_subset_xx <- plotmat(round(t(tm_thresh_subset_xx), digits=2), relsize=1.1,
                                 box.type="circle", box.size=0.02,
                                 shadow.col="grey", shadow.size=0.005);vis_thresh_subset_xx
 dev.off()
 dev.off()
-png("Plots/script6_visnetwork_subset_xx.png")
+png("Plots/script4_visnetwork_subset_xx.png")
 vis_subset_xx <- plotmat(round(t(tm_subset_xx), digits=2), relsize=1.1,
                          box.type="circle", box.size=0.02,
                          shadow.col="grey", shadow.size=0.005);vis_subset_xx
 dev.off()
-png("Plots/script6_visnetwork_thresh_subset_xx.png")
+png("Plots/script4_visnetwork_thresh_subset_xx.png")
 vis_thresh_subset_xx <- plotmat(round(t(tm_thresh_subset_xx), digits=2), relsize=1.1,
                                 box.type="circle", box.size=0.02,
                                 shadow.col="grey", shadow.size=0.005);vis_thresh_subset_xx
 dev.off()
 
 dev.off()
-pdf("Plots/script6_visnetwork_repeat_subset_xx.pdf")
+pdf("Plots/script4_visnetwork_repeat_subset_xx.pdf")
 vis_repeat_subset_xx <- plotmat(round(t(tm_repeat_subset_xx), digits=2), relsize=1.1,
                                 box.type="circle", box.size=0.02,
                                 shadow.col="grey", shadow.size=0.005);vis_repeat_subset_xx
 dev.off()
-pdf("Plots/script6_visnetwork_thresh_repeat_subset_xx.pdf")
+pdf("Plots/script4_visnetwork_thresh_repeat_subset_xx.pdf")
 vis_thresh_repeat_subset_xx <- plotmat(round(t(tm_thresh_repeat_subset_xx), digits=2), relsize=1.1,
                                        box.type="circle", box.size=0.02,
                                        shadow.col="grey", shadow.size=0.005);vis_thresh_repeat_subset_xx
 dev.off()
 dev.off()
-png("Plots/script6_visnetwork_repeat_subset_xx.png")
+png("Plots/script4_visnetwork_repeat_subset_xx.png")
 vis_repeat_subset_xx <- plotmat(round(t(tm_repeat_subset_xx), digits=2), relsize=1.1,
                                 box.type="circle", box.size=0.02,
                                 shadow.col="grey", shadow.size=0.005);vis_repeat_subset_xx
 dev.off()
-png("Plots/script6_visnetwork_thresh_repeat_subset_xx.png")
+png("Plots/script4_visnetwork_thresh_repeat_subset_xx.png")
 vis_thresh_repeat_subset_xx <- plotmat(round(t(tm_thresh_repeat_subset_xx), digits=2), relsize=1.1,
                                        box.type="circle", box.size=0.02,
                                        shadow.col="grey", shadow.size=0.005);vis_thresh_repeat_subset_xx
@@ -607,24 +607,24 @@ dev.off()
 
 
 dev.off()
-png("Plots/script6_visnetwork_subset_xx.png", width=750, height=750)
+png("Plots/script4_visnetwork_subset_xx.png", width=750, height=750)
 vis_subset_xx <- plotmat(round(t(tm_subset_xx), digits=2), relsize=1.1,
                          box.type="circle", box.size=0.02,
                          shadow.col="grey", shadow.size=0.005);vis_subset_xx
 dev.off()
-png("Plots/script6_visnetwork_thresh_subset_xx.png", width=750, height=750)
+png("Plots/script4_visnetwork_thresh_subset_xx.png", width=750, height=750)
 vis_thresh_subset_xx <- plotmat(round(t(tm_thresh_subset_xx), digits=2), relsize=1.1,
                                 box.type="circle", box.size=0.02,
                                 shadow.col="grey", shadow.size=0.005);vis_thresh_subset_xx
 dev.off()
 
 dev.off()
-png("Plots/script6_visnetwork_repeat_subset_xx.png", width=750, height=750)
+png("Plots/script4_visnetwork_repeat_subset_xx.png", width=750, height=750)
 vis_repeat_subset_xx <- plotmat(round(t(tm_repeat_subset_xx), digits=2), relsize=1.1,
                                 box.type="circle", box.size=0.02,
                                 shadow.col="grey", shadow.size=0.005);vis_repeat_subset_xx
 dev.off()
-png("Plots/script6_visnetwork_thresh_repeat_subset_xx.png", width=950, height=950)
+png("Plots/script4_visnetwork_thresh_repeat_subset_xx.png", width=950, height=950)
 vis_thresh_repeat_subset_xx <- plotmat(round(t(tm_thresh_repeat_subset_xx), digits=2), relsize=1.1,
                                        box.type="circle", box.size=0.02,
                                        shadow.col="grey", shadow.size=0.005,
@@ -982,16 +982,16 @@ map2 <- ggplot(centroids_try) + usa_shapes + maptheme + mapcoords +
             hjust = 0, nudge_x = 0.2, nudge_y = -0.2,
             size = 7, color = "black", fontface = "bold");map2
 
-pdf("Plots/script6_map1_probability.pdf", )
+pdf("Plots/script4_map1_probability.pdf", )
 map1
 dev.off()
-png("Plots/script6_map1_probability.png", height=720, width=1200)
+png("Plots/script4_map1_probability.png", height=720, width=1200)
 map1
 dev.off()
-pdf("Plots/script6_map2_direction.pdf", height=7.2, width=12)
+pdf("Plots/script4_map2_direction.pdf", height=7.2, width=12)
 map2
 dev.off()
-png("Plots/script6_map2_direction.png", height=720, width=1200)
+png("Plots/script4_map2_direction.png", height=720, width=1200)
 map2
 dev.off()
 
