@@ -35,8 +35,8 @@ The file microreact_input_5y.csv is written by script 1. The microreact figure i
  * Drag and drop the file into the page.
  * Select `continue`.
  * Select `continue`.
- * To make the legend, select `Legend` to pull up the Legend, downloading it by clicking on the three bars in that window and downloading it as PNG.
- * To make the timeline, select `Create new Timeline` from the three bars from the pencil icon at the top right. Change the Temporal Data Type to `One column: Formatted Values`, change the Temporal Data Column to 'Date', and click `close`. Download it by clicking on the three bars in that window and downloading it as PNG.
+ * To make the legend, select `Legend` to pull up the Legend, download it by clicking on the three bars in that window and downloading it as PNG.
+ * To make the timeline, select `Create new Timeline` from the three bars from the pencil icon at the top right. Change the Temporal Data Type to `One column: Formatted Values`, change the Temporal Data Column to `Date`, and click `close`. Download it by clicking on the three bars in that window and downloading it as PNG.
  * To format the map, select the sliders icon in that window and adjust as desired.
    
 ## Authors
