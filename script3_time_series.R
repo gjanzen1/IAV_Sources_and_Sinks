@@ -69,11 +69,11 @@ plot <- ggplot(temp3, aes(y=Freq, x=Var1)) +
        x ="Week",
        y = "Number of IAV cases within a week");plot
 
-pdf("Plots/script4_case_frequency_over_time.pdf",width=8)
+pdf("Plots/script3_case_frequency_over_time.pdf",width=8)
 plot
 dev.off()
 
-png("Plots/script4_case_frequency_over_time.png",width=1000)
+png("Plots/script3_case_frequency_over_time.png",width=1000)
 plot
 dev.off()
 
@@ -89,11 +89,11 @@ tempts <- ts(temp3$Freq, start=c(temp3$Year[1],temp3$Var2[1]), end=c(temp3$Year[
 m <- stats::decompose(tempts, type="additive")
 plot(m)
 
-pdf("Plots/script4_case_frequency_over_time_decomposition.pdf",width=8)
+pdf("Plots/script3_case_frequency_over_time_decomposition.pdf",width=8)
 plot(m)
 dev.off()
 
-png("Plots/script4_case_frequency_over_time_decomposition.png",width=900, height=750)
+png("Plots/script3_case_frequency_over_time_decomposition.png",width=900, height=750)
 plot(m, cex.lab=1.5, cex.axis=1.5)
 dev.off()
 
@@ -124,7 +124,7 @@ plot2 <- ggplot(seasonal, aes(y=x, x=index)) +
        x ="Week",
        y = "Number of IAV cases within a week");plot2
 
-pdf("Plots/script4_case_frequency_over_time_decomposition_seasonal.pdf",width=8, height=5)
+pdf("Plots/script3_case_frequency_over_time_decomposition_seasonal.pdf",width=8, height=5)
 plot2
 dev.off()
 
@@ -170,13 +170,12 @@ plot <- ggplot(temp3, aes(y=Freq, x=Var1)) +
        x ="Month",
        y = "Number of IAV cases within a month");plot
 
-pdf("Plots/script4_case_frequency_over_time_month.pdf",width=8)
+pdf("Plots/script3_case_frequency_over_time_month.pdf",width=8)
 plot
 dev.off()
 
 
 ######################################
-# data_usda <- as.data.frame(read.csv("Data/script4_USDA_data_8_11_22.csv"))
 data_usda <- as.data.frame(read.csv("Data/usda_quick_stats_10_3_24.csv"))
 data_usda$State_code <- state.abb[match(tolower(data_usda$State),tolower(state.name))]
 production_name <- "Hog inventory"
@@ -206,7 +205,7 @@ plot <- ggplot(data_usda_agg_mut, aes(y=Production, x=State)) +
        x ="State",
        y = paste0(production_name, " (measured in head)"));plot
 
-pdf("Plots/script4_hog_production.pdf")
+pdf("Plots/script3_hog_production.pdf")
 plot
 dev.off()
 
@@ -365,23 +364,23 @@ plot2 <- ggplot(ss_usda_mut2_melt, aes(fill=variable, y=value, x=State)) +
        y = "Count")+
   theme(legend.title=element_blank());plot2
 
-pdf("Plots/script4_begin_end_states.pdf")
+pdf("Plots/script3_begin_end_states.pdf")
 plot1
 dev.off()
 
-png("Plots/script4_begin_end_states.png", width=1000)
+png("Plots/script3_begin_end_states.png", width=1000)
 plot1
 dev.off()
 
-png("Plots/script4_begin_end_states_poster.png", width=800, height=550)
+png("Plots/script3_begin_end_states_poster.png", width=800, height=550)
 plot1_poster
 dev.off()
 
-pdf("Plots/script4_begin_end_states_production.pdf")
+pdf("Plots/script3_begin_end_states_production.pdf")
 plot2
 dev.off()
 
-png("Plots/script4_begin_end_states_production.png", width=800, height=350)
+png("Plots/script3_begin_end_states_production.png", width=800, height=350)
 plot2
 dev.off()
 
@@ -489,35 +488,35 @@ plot3_PPPPPP <- ggplot(df_mut_PPPPPP, aes(x=Date_min, xend=Date_max_inflate, y=C
        x ="Time",
        y = "Subtype/Constellation");plot3_PPPPPP
 
-pdf("Plots/script4_begin_end_timeline.pdf", height=8)
+pdf("Plots/script3_begin_end_timeline.pdf", height=8)
 plot2
 dev.off()
 
-pdf("Plots/script4_begin_end_timeline_sort.pdf", height=8)
+pdf("Plots/script3_begin_end_timeline_sort.pdf", height=8)
 plot3
 dev.off()
 
-pdf("Plots/script4_begin_end_timeline_sort_searchable.pdf", width=10, height=40)
+pdf("Plots/script3_begin_end_timeline_sort_searchable.pdf", width=10, height=40)
 plot3
 dev.off()
 
-png("Plots/script4_begin_end_timeline_sort.png", width=2000, height=3000)
+png("Plots/script3_begin_end_timeline_sort.png", width=2000, height=3000)
 plot3
 dev.off()
 
-pdf("Plots/script4_begin_end_timeline_sort2.pdf", height=8)
+pdf("Plots/script3_begin_end_timeline_sort2.pdf", height=8)
 plot4
 dev.off()
 
-png("Plots/script4_begin_end_timeline_sort_poster.png", width = 750, height = 2500)
+png("Plots/script3_begin_end_timeline_sort_poster.png", width = 750, height = 2500)
 plot3_poster
 dev.off()
 
-png("Plots/script4_begin_end_timeline_sort_nolabels.png", width = 900, height = 700)
+png("Plots/script3_begin_end_timeline_sort_nolabels.png", width = 900, height = 700)
 plot3_nolabels
 dev.off()
 
-png("Plots/script4_begin_end_timeline_sort_late.png", width = 750, height = 2000)
+png("Plots/script3_begin_end_timeline_sort_late.png", width = 750, height = 2000)
 plot3_late
 dev.off()
 
@@ -723,11 +722,3 @@ mean(table(df2$Year_min)[13:14]) #mean number of new recombinants 2021-2023
 # prob of sink given starting state
 ss_melt
 sink_table
-
-
-
-
-
-
-
-
