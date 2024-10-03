@@ -1,6 +1,6 @@
 # IAV_Sources_and_Sinks
 
-Data and R code used to run analyses for the manuscript "Sources and sinks of influenza A virus genome diversity in swine in the USA from 2009 to 2022".
+Data and R code used to run analyses for the manuscript "Sources and sinks of influenza A virus genome diversity in swine in the USA from 2009 to 2022". This manuscript is in prep.
 
 ## Description
 
@@ -18,10 +18,14 @@ This manuscript summarizes 13 years of influenza A virus evolution in the swine 
 ### Script 1
 This script brings together a lot of data, cleans it, formats it, and produces a few data frames that the following scripts will use. This script must be run once to build the .RData file, which all following scripts will load into memory before progressing. Some summary analyses are also run in this script.
 
-
-
 ### Script 2
-This script runs the Zeta diversity analyses and produces the associated plots.
+This script runs the Zeta diversity analyses and produces the associated plots. Core functionality is provided with the [`zetadiv` package](https://cran.r-project.org/web/packages/zetadiv/index.html).
+
+### Script 3
+This script establishes a time series of detections and runs analyses and looks at temporal and geographic patterns of detections. 
+
+### Script 4
+This script uses Markov Chains to model state-to-state IAV transition probabilities, provides code for testing real and hypothetical IAV strain detection orders, and statistic to evaluate model prediction performance.
 
 * How to run the program
 * Step-by-step bullets
@@ -41,16 +45,9 @@ The file microreact_input_5y.csv is written by script 1. The microreact figure i
    
 ## Authors
 
-Contributors names and contact info
-
-ex. Garrett Janzen
-ex. [@garrettjanzen](https://twitter.com/garrettjanzen)
+Garrett M. Janzen
+[@garrettjanzen](https://twitter.com/garrettjanzen)
 
 ## Acknowledgments
+Thanks to co-authors Blake T. Inderski, Jennifer Chang, Zebulun W. Arendsee, Alicia Janas-Martindale, Amy L. Baker, and Tavis K. Anderson, and to all members of the Flu-Crew at the National Animal Disease Center, USDA-ARS.
 
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
