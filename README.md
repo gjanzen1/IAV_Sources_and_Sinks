@@ -15,16 +15,16 @@ This manuscript summarizes 13 years of influenza A virus evolution in the swine 
 ## Outline
 
 ### Script 1
-This script brings together a lot of data, cleans it, formats it, and produces a few data frames that the following scripts will use. This script must be run once to build the .RData file, which all following scripts will load into memory before progressing. Some summary analyses are also run in this script.
+This script brings together a lot of data, cleans it, formats it, and produces a few data frames that the following scripts will use. This script must be run once to build the `IAV_Sources_and_Sinks.RData` file, which all following scripts will load into memory before progressing. Some summary analyses are also run in this script.
 
 ### Script 2
-This script runs the Zeta diversity analyses and produces the associated plots. Core functionality is provided with the [`zetadiv` package](https://cran.r-project.org/web/packages/zetadiv/index.html).
+This script runs the Zeta diversity analyses and produces the associated plots. Core functionality is provided with the [`zetadiv` package](https://cran.r-project.org/web/packages/zetadiv/index.html). You must load `IAV_Sources_and_Sinks.RData` from Script 1 to run this script. This script saves nothing to the .RData file.
 
 ### Script 3
-This script establishes a time series of detections and runs analyses and looks at temporal and geographic patterns of detections. 
+This script establishes a time series of detections and runs analyses and looks at temporal and geographic patterns of detections. You must load `IAV_Sources_and_Sinks.RData` from Script 1 to run this script.
 
 ### Script 4
-This script uses Markov Chains to model state-to-state IAV transition probabilities, provides code for testing real and hypothetical IAV strain detection orders, and statistic to evaluate model prediction performance.
+This script uses Markov Chains to model state-to-state IAV transition probabilities, provides code for testing real and hypothetical IAV strain detection orders, and statistics to evaluate model prediction performance. You must load `IAV_Sources_and_Sinks.RData`, modified and saved in Script 3, to run this script.
 
 ### Microreact
 The file microreact_input_5y.csv is written by script 1. The microreact figure in this manuscript can be made by following these steps:
