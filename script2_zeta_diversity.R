@@ -1,11 +1,11 @@
+
 ################
-### This script generates zeta diversity statistics. Diversity unit is UID_complex
+### This script generates zeta diversity statistics.
 ### Run script1 before running this script.
 ################
 
 setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
-load("IAV_Sources_and_Sinks.RData")
-# save.image("IAV_Sources_and_Sinks.RData")
+load("IAV_Sources_and_Sinks.RData") # required to run this script
 
 ##########################
 
@@ -29,133 +29,51 @@ data_2020 <- data_nona[which(data_nona$Date_year == "2020"),]
 data_2021 <- data_nona[which(data_nona$Date_year == "2021"),]
 data_2022 <- data_nona[which(data_nona$Date_year == "2022"),]
 
-# #########################
-# ### Calculate zeta diversity manually
-# ### Not used in this manuscript
-# # Zeta Diversity as a Concept and Metric That Unifies Incidence-Based Biodiversity Patterns, supplement
-# # https://www.journals.uchicago.edu/doi/suppl/10.1086/678125/suppl_file/55316apa.pdf
-# 
-# onehot_fun <- function(x){
-#   ifelse(x != 0, 1, 0)}
-# 
-# table_2010 <- as.data.frame.matrix(table(data_2010[,c("State","UID_complex")]))
-# onehot_2010 <- t(data.frame(lapply(table_2010,onehot_fun)));colnames(onehot_2010) <- row.names(table_2010)
-# table_2011 <- as.data.frame.matrix(table(data_2011[,c("State","UID_complex")]))
-# onehot_2011 <- t(data.frame(lapply(table_2011,onehot_fun)));colnames(onehot_2011) <- row.names(table_2011)
-# table_2012 <- as.data.frame.matrix(table(data_2012[,c("State","UID_complex")]))
-# onehot_2012 <- t(data.frame(lapply(table_2012,onehot_fun)));colnames(onehot_2012) <- row.names(table_2012)
-# table_2013 <- as.data.frame.matrix(table(data_2013[,c("State","UID_complex")]))
-# onehot_2013 <- t(data.frame(lapply(table_2013,onehot_fun)));colnames(onehot_2013) <- row.names(table_2013)
-# table_2014 <- as.data.frame.matrix(table(data_2014[,c("State","UID_complex")]))
-# onehot_2014 <- t(data.frame(lapply(table_2014,onehot_fun)));colnames(onehot_2014) <- row.names(table_2014)
-# table_2015 <- as.data.frame.matrix(table(data_2015[,c("State","UID_complex")]))
-# onehot_2015 <- t(data.frame(lapply(table_2015,onehot_fun)));colnames(onehot_2015) <- row.names(table_2015)
-# table_2016 <- as.data.frame.matrix(table(data_2016[,c("State","UID_complex")]))
-# onehot_2016 <- t(data.frame(lapply(table_2016,onehot_fun)));colnames(onehot_2016) <- row.names(table_2016)
-# table_2017 <- as.data.frame.matrix(table(data_2017[,c("State","UID_complex")]))
-# onehot_2017 <- t(data.frame(lapply(table_2017,onehot_fun)));colnames(onehot_2017) <- row.names(table_2017)
-# table_2018 <- as.data.frame.matrix(table(data_2018[,c("State","UID_complex")]))
-# onehot_2018 <- t(data.frame(lapply(table_2018,onehot_fun)));colnames(onehot_2018) <- row.names(table_2018)
-# table_2019 <- as.data.frame.matrix(table(data_2019[,c("State","UID_complex")]))
-# onehot_2019 <- t(data.frame(lapply(table_2019,onehot_fun)));colnames(onehot_2019) <- row.names(table_2019)
-# table_2020 <- as.data.frame.matrix(table(data_2020[,c("State","UID_complex")]))
-# onehot_2020 <- t(data.frame(lapply(table_2020,onehot_fun)));colnames(onehot_2020) <- row.names(table_2020)
-# table_2021 <- as.data.frame.matrix(table(data_2021[,c("State","UID_complex")]))
-# onehot_2021 <- t(data.frame(lapply(table_2021,onehot_fun)));colnames(onehot_2021) <- row.names(table_2021)
-# table_2022 <- as.data.frame.matrix(table(data_2022[,c("State","UID_complex")]))
-# onehot_2022 <- t(data.frame(lapply(table_2022,onehot_fun)));colnames(onehot_2022) <- row.names(table_2022)
-# table_full <- as.data.frame.matrix(table(data_nona[,c("State","UID_complex")]))
-# onehot_full <- t(data.frame(lapply(table_full,onehot_fun)));colnames(onehot_full) <- row.names(table_full)
-# 
-# nrow(table_2010);nrow(table_2011);nrow(table_2012);nrow(table_2013);nrow(table_2014);nrow(table_2015);nrow(table_2016);
-# nrow(table_2017);nrow(table_2018);nrow(table_2019);nrow(table_2020);nrow(table_2021);nrow(table_2022);nrow(table_full)
-# 
-# ### Regarding 2010 ###
-# #2010 has only 9 states in play. The next lowest number is 15.
-# #I don't want to restrict my plots to a zeta order of 9, so I will be commenting out 2010 going forward.
-# 
-# df_list <- list(onehot_2010, onehot_2011, onehot_2012, onehot_2013, onehot_2014, onehot_2015,
-#                 onehot_2016, onehot_2017, onehot_2018, onehot_2019, onehot_2020, onehot_2021, onehot_2022, onehot_full)
-# val <- max(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
-#              nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));val
-# minval <- min(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
-#                 nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));minval
-# 
-# data <- NULL
-# df <- data.frame(matrix(ncol = 0, nrow = val))
-# df_sd <- data.frame(matrix(ncol = 0, nrow = val))
-# i <- 1
-# 
-# for(i in 1:length(df_list)){
-#   data <- as.data.frame(df_list[i])
-#   
-#   x<-dim(data)[2]
-#   zeta<-numeric()
-#   zeta_sd<-numeric()
-#   u<-numeric()
-#   
-#   for(j in 1:x){
-#     for(z in 1:1000){
-#       sam<-sample(1:x,j,replace=FALSE)    #shuffles 1:x out of order
-#       u[z]<-sum(apply(data[sam],1,prod))
-#     } 
-#     hist(u, breaks=40)
-#     zeta[j] <- mean(u)
-#     zeta_sd[j] <- sd(u)
-#   }
-#   length(zeta) <- val
-#   length(zeta_sd) <- val
-#   df <- cbind(df, zeta)
-#   df_sd <- cbind(df_sd, zeta_sd)
-#   # plot(1:x,zeta)
-# }
-# 
-# colnames(df) <- c("2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","Full")
-# df$Zeta_Order <- 1:nrow(df)
-# m <- melt(df, id="Zeta_Order")
-# colnames(m) <- c("Zeta_Order","Year","Zeta")
-# 
-# colnames(df_sd) <- c("2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","Full")
-# df_sd$Zeta_Order <- 1:nrow(df_sd)
-# m_sd <- melt(df_sd, id="Zeta_Order")
-# colnames(m_sd) <- c("Zeta_Order","Year","SD")
-# 
-# m_full <- merge(m, m_sd, by=c("Zeta_Order","Year"))
-# m <- m_full[which(m_full$Year != "Full"),]
-# 
-# plot_full <- ggplot(m_full, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
-#   geom_line(aes(color=Year), size=1.5) + 
-#   geom_point(aes(color=Year), size=2) +
-#   xlim(0.95,17) +
-#   labs(title="Change in Zeta Diversity over time",
-#        x ="Zeta Order",
-#        y = "Zeta Diversity") +
-#   geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1));plot_full
-# 
-# plot <- ggplot(m, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
-#   geom_line(aes(color=Year), size=1.5) + 
-#   geom_point(aes(color=Year), size=2) +
-#   xlim(0.95,17) +
-#   labs(title="Change in Zeta Diversity over time",
-#        x ="Zeta Order",
-#        y = "Zeta Diversity") +
-#   geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1));plot
-# 
-# pdf("Plots/script2_zeta.pdf")
-# plot
-# dev.off()
-# 
-# pdf("Plots/script2_zeta_full.pdf")
-# plot_full
-# dev.off()
+#########################
+# Zeta Diversity as a Concept and Metric That Unifies Incidence-Based Biodiversity Patterns, supplement
+# https://www.journals.uchicago.edu/doi/suppl/10.1086/678125/suppl_file/55316apa.pdf
+
+onehot_fun <- function(x){
+  ifelse(x != 0, 1, 0)}
+
+table_2010 <- as.data.frame.matrix(table(data_2010[,c("State","UID_complex")]))
+onehot_2010 <- t(data.frame(lapply(table_2010,onehot_fun)));colnames(onehot_2010) <- row.names(table_2010)
+table_2011 <- as.data.frame.matrix(table(data_2011[,c("State","UID_complex")]))
+onehot_2011 <- t(data.frame(lapply(table_2011,onehot_fun)));colnames(onehot_2011) <- row.names(table_2011)
+table_2012 <- as.data.frame.matrix(table(data_2012[,c("State","UID_complex")]))
+onehot_2012 <- t(data.frame(lapply(table_2012,onehot_fun)));colnames(onehot_2012) <- row.names(table_2012)
+table_2013 <- as.data.frame.matrix(table(data_2013[,c("State","UID_complex")]))
+onehot_2013 <- t(data.frame(lapply(table_2013,onehot_fun)));colnames(onehot_2013) <- row.names(table_2013)
+table_2014 <- as.data.frame.matrix(table(data_2014[,c("State","UID_complex")]))
+onehot_2014 <- t(data.frame(lapply(table_2014,onehot_fun)));colnames(onehot_2014) <- row.names(table_2014)
+table_2015 <- as.data.frame.matrix(table(data_2015[,c("State","UID_complex")]))
+onehot_2015 <- t(data.frame(lapply(table_2015,onehot_fun)));colnames(onehot_2015) <- row.names(table_2015)
+table_2016 <- as.data.frame.matrix(table(data_2016[,c("State","UID_complex")]))
+onehot_2016 <- t(data.frame(lapply(table_2016,onehot_fun)));colnames(onehot_2016) <- row.names(table_2016)
+table_2017 <- as.data.frame.matrix(table(data_2017[,c("State","UID_complex")]))
+onehot_2017 <- t(data.frame(lapply(table_2017,onehot_fun)));colnames(onehot_2017) <- row.names(table_2017)
+table_2018 <- as.data.frame.matrix(table(data_2018[,c("State","UID_complex")]))
+onehot_2018 <- t(data.frame(lapply(table_2018,onehot_fun)));colnames(onehot_2018) <- row.names(table_2018)
+table_2019 <- as.data.frame.matrix(table(data_2019[,c("State","UID_complex")]))
+onehot_2019 <- t(data.frame(lapply(table_2019,onehot_fun)));colnames(onehot_2019) <- row.names(table_2019)
+table_2020 <- as.data.frame.matrix(table(data_2020[,c("State","UID_complex")]))
+onehot_2020 <- t(data.frame(lapply(table_2020,onehot_fun)));colnames(onehot_2020) <- row.names(table_2020)
+table_2021 <- as.data.frame.matrix(table(data_2021[,c("State","UID_complex")]))
+onehot_2021 <- t(data.frame(lapply(table_2021,onehot_fun)));colnames(onehot_2021) <- row.names(table_2021)
+table_2022 <- as.data.frame.matrix(table(data_2022[,c("State","UID_complex")]))
+onehot_2022 <- t(data.frame(lapply(table_2022,onehot_fun)));colnames(onehot_2022) <- row.names(table_2022)
+table_full <- as.data.frame.matrix(table(data_nona[,c("State","UID_complex")]))
+onehot_full <- t(data.frame(lapply(table_full,onehot_fun)));colnames(onehot_full) <- row.names(table_full)
+
+df_list <- list(onehot_2010, onehot_2011, onehot_2012, onehot_2013, onehot_2014, onehot_2015,
+                onehot_2016, onehot_2017, onehot_2018, onehot_2019, onehot_2020, onehot_2021, onehot_2022, onehot_full)
+val <- max(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
+             nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));val
+minval <- min(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
+                nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));minval
 
 ##########################
 ### Calculate zeta diversity with the R package "zetadiv"
-
-# Download state centroids
-# https://github.com/ajduberstein/us_centroids/blob/master/state.csv
-
-centroids <- read.csv("Data/state.csv")
 
 zeta_2010 <- Zeta.order.mc(as.data.frame(t(onehot_2010)), order = 3, sam=100)
 zeta_2011 <- Zeta.order.mc(as.data.frame(t(onehot_2011)), order = 3, sam=100)
