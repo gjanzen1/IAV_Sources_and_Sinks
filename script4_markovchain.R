@@ -1,24 +1,24 @@
-###########################
+
+################
+### This script generates statistics and plots related to predictions of interstate spread of IAV.
+### Run script1 before running this script.
+################
 
 setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
 load("IAV_Sources_and_Sinks.RData") # required to run this script
 
-# if (!require("BiocManager", quietly = TRUE))
-#   install.packages("BiocManager")
-# BiocManager::install("ComplexHeatmap")
-library(markovchain)
-library(diagram)
-library(lattice)
-library(gplots)
-library(diagram)
-library(ade4)
-library(ggplot2)
-library(reshape2)
-library(vegan)
+##########################
 
-`%!in%` <- Negate(`%in%`)
+library("ggplot2")
+library("gplots")
+library("reshape2")
+library("markovchain")
+library("diagram")
+library("lattice")
+library("ade4")
+library("vegan")
 
-### Using MC to model and predict interstate travel of constellations
+##########################
 
 #### Choose your preferred version of constellation: #### 
 # data_sub <- data_ss[,c("Date","State","Constellation"),]
@@ -675,7 +675,6 @@ mean(tm_repeat_xx[,which(colnames(tm_repeat_xx) == "IA")]) # mean probability of
 mean(rowSums(tm_repeat[,which(colnames(tm_repeat) != "IA")])) # mean probability of not being detected next in Iowa
 mean(tm_repeat[,which(colnames(tm_repeat) != "IA")]) # mean probability of being detected next in any other state
 
-#GGG
 #probability that you end up at XX, based on your FIRST/STARTING state
 statestringlist_repeat_xx
 
