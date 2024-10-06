@@ -1,96 +1,63 @@
 
 ################
-### This script reads raw data and generates cleaned, formatted datasets
+### This script reads raw data and updated clade classifications and generates cleaned, formatted datasets
 ### Datasets:
 # data:               all data
 # data_nona:          all data, no NAs (excludes samples with incomplete and missing constellations and clades)
 # data_uniq:          all unique data from data_nona, with summary statistics
-# data_usda_annual:   annual per-state hog production values
-# data_usda_monthly:  monthly per-state hog production values
+# data_usda:          per-state hog production values
 ################
 
 setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
-# load("IAV_Sources_and_Sinks.RData")
-# save.image("IAV_Sources_and_Sinks.RData")
 
-# ##########################
-# 
-# library(devtools)
-# install.packages("ggplot2")
-# install.packages("readxl")
-# install.packages("reshape2")
-# install.packages("zetadiv")
-# install.packages("maps")
-# install.packages("Rtools")
-# install.packages("raster")
-# install.packages("readr")
-# install.packages("readxl")
-# install.packages("sf")
-# install.packages("maps")
-# install.packages("spData")
-# install.packages("magick")
-# install.packages("grid")
-# install.packages("tmap")
-# install.packages("viridis")
-# install.packages("lubridate")
-# install.packages("dplyr")
-# install.packages("network")
-# install.packages("tidygraph")
-# install.packages("ggraph")
-# install.packages("igraph")
-# install.packages("visNetwork")
-# install.packages("networkD3")
-# install.packages("ggpmisc")
-# install.packages("geodist")
-# install.packages("lme4")
-# install.packages("pscl")
-# install.packages("randomForest")
-# install.packages("Metrics")
-# install_github('munoztd0/reprtree')
-# install.packages("gbm")
-# install.packages("dismo")
-# install.packages("minerva")
-# install.packages("emmeans")
-# install.packages("dplyr")
-# 
-# ##########################
+##########################
 
 library("ggplot2")
+library("ggraph")
+library("igraph")
+library("gplots")
+library("ggpmisc")
+library("tidygraph")
+library("networkD3")
+library("viridis")
 library("readxl")
+library("readr")
 library("reshape2")
 library("maps")
+library("tmap")
 library("raster")
-library("readr")
+library("dismo")
 library("sf")
-library("maps")
 library("spData")
 library("magick")
 library("grid")
-library("tmap")
-library("viridis")
-library("lubridate")
 library("data.table")
 library("dplyr")
-library("ggplot2")
+library("stringr")
+library("lubridate")
 library("network")
-library("tidygraph")
-library("ggraph")
-library("igraph")
-library("visNetwork")
-library("networkD3")
-library("ggpmisc")
 library("geodist")
-library("lme4")
 library("pscl")
 library("randomForest")
 library("Metrics")
 library("reprtree")
 library("gbm")
-library("dismo")
 library("minerva")
 library("emmeans")
-library("stringr")
-library("data.table")
+library("zetadiv")
+library("TTR")
+library("zoo")
+library("visNetwork")
+library("markovchain")
+library("lattice")
+library("diagram")
+library("ade4")
+library("lme4")
+library("vegan")
+
+##########################
+### Start with a clean memory (not required)
+# rm(list = ls())
 
 ##########################
 ### Define some functions
@@ -133,7 +100,6 @@ data2 <- data2[,c("Barcode","Strain","Host","Subtype","Year","Month","Day","Coun
 ##########################
 ### Modify dataset structure before they are merged.
 
-# GGG 10/2/2024 000-query-result-v3--octoFLU-classify
 data2_reclassifications <- as.data.frame(read.table(file = 'Data/000-query-result-v3--octoFLU-classify.txt', sep = '\t', header = TRUE));head(data2_reclassifications);dim(data2_reclassifications)
 colnames(data2_reclassifications) <- c("Strain", "Barcode","segment_name","space","segment_subtype","Clade_rec","Gl_clade_rec")
 data2_reclassifications$segment_name <- ifelse(is.na(data2_reclassifications$segment_name), "NA", data2_reclassifications$segment_name);table(data2_reclassifications$segment_name)
@@ -211,12 +177,6 @@ data2$NS <- ifelse(data2$NS == "T", "TRIG", data2$NS)
 data2$NS <- ifelse(data2$NS == "P", "pdm", data2$NS)
 data2$NS <- ifelse(data2$NS == "V", "LAIV", data2$NS)
 # data2$NS <- ifelse(data2$NS == "X", "humanSeasonal", data2$NS)
-
-# data2$Ha_clade <- NULL
-# data2$Na_clade <- NULL
-# data2$Haseq <- NULL
-# data2$Naseq <- NULL
-# data2$Host <- NULL
 
 i <- NULL
 for(i in 1:length(data2$State)){
@@ -426,23 +386,6 @@ data$Date_season <- ifelse(data$Date_month == "September" |
                              data$Date_month == "October" |
                              data$Date_month == "November", "fall", data$Date_season)
 
-# # filling in the columns H1, H3, N1, N2, not completed, GGG, 10/2/2024
-# i <- dat <- NULL
-# for(i in 1:nrow(data)){
-#   # i <- 1
-#   dat <- data[i,]
-#   if(is.na(dat$Ha_clade_US)){
-#     if(is.na(dat))
-#     dat$H1 <- ifelse(substr(dat$Subtype, 1, 2) == "H1", dat$H1, NA)
-#     dat$H3 <- ifelse(substr(dat$Subtype, 1, 2) == "H3", dat$H3, NA)
-#   }
-#   if(is.na(dat$Na_clade_US)){
-#     dat$N1 <- ifelse(substr(dat$Subtype, 3, 4) == "N1", dat$N1, NA)
-#     dat$N2 <- ifelse(is.na(dat$Na_clade_US) & substr(dat$Subtype, 3, 4) == "N2", dat$N2, NA)
-#   }
-#   data[,i] <- dat
-# }
-
 ##############################
 ##############################
 ##############################
@@ -450,8 +393,6 @@ data$Date_season <- ifelse(data$Date_month == "September" |
 #Strain names incorporate place, time, and subtype of the virus, and include a barcode sequence.
 #Each strain name should appear once in the dataset. While constellation/clade combinations can recur,
 #Each strain is a single isolate. Therefore, we can drop all rows with duplicated strain names.
-
-### GGG 10/1/2024
 
 repeated_strains <- names(table(data$Strain)[which(table(data$Strain) > 1)]);length(repeated_strains)
 data_temp <- data[which(data$Strain %in% repeated_strains),]
@@ -524,7 +465,6 @@ data$Subtype <- ifelse(data$Strain == "A/swine/Kansas/A01377621/2015",     "H1N1
 
 #####################
 #These strains have two subtypes or two strains, we sort this out too.
-data_store <- data
 
 temp <- data[grep(",", data$Strain), ]
 data <- data[-grep(",", data$Strain), ] #taking out problem rows, to be added back in when fixed
@@ -609,7 +549,7 @@ temp$Constellation1 <- temp$Constellation2 <- temp$ConstellationTest <- temp$Con
 
 ncol(data);ncol(temp)
 data <- rbind(data, temp)
-rm(temp)
+rm(temp, Con1genej, Con2genej, Conm, Conmgenej, constellationi1, constellationi2, m, straini1, straini2)
 
 #######
 # Some constellations contain an X character, rather than the appropriate -, or are "NA"/NA. We fix that here.
@@ -617,30 +557,9 @@ data$Constellation <- gsub('X', '-', data$Constellation);table(data$Constellatio
 data$Constellation <- ifelse(data$Constellation == "NA" | is.na(data$Constellation) | data$Constellation == "",
                              "------", data$Constellation)
 
-# ###################
-# #There are now cases where we have Constellations, but the individual internal genes are not filled in.
-# If I want to use this, I have to modify it to not just past the letter, but the small string that spells it out.
-# data$PB2 <- substr(data$Constellation, 1, 1)
-# data$PB1 <- substr(data$Constellation, 2, 2)
-# data$PA <- substr(data$Constellation, 3, 3)
-# data$NP <- substr(data$Constellation, 4, 4)
-# data$M <- substr(data$Constellation, 5, 5)
-# data$NS <- substr(data$Constellation, 6, 6)
-
-
 ###################
 ###################
 ###################
-
-#These strains are missing values in my version of the data, but updates in OctoFluShow show this data, which I fix here manually.
-# data[which(data$Barcode == "A01509530"),]
-# data$Strain <- ifelse(data$Barcode == "A01509530", "A/swine/Nebraska/A0A01509530/2014", data$Strain)
-# data$Constellation <- ifelse(data$Barcode == "A01509530", "T-TP-T", data$Constellation)
-# data[which(data$Barcode == "A01678509"),]
-# data$Ha_clade <- ifelse(data$Strain == "A/swine/Minnesota/A01678509/2017	", "2010.1", data$Ha_clade)
-
-#Fixing some of the labels, so they aren't counted as different
-#See the conversation with Tavis Anderson on Teams on 11/22/2023
 
 data$H1 <- ifelse(data$H1 == "PDM", "pdm", data$H1)
 data$H1 <- ifelse(data$H1 == "pdm-vaccine", "pdm", data$H1)
@@ -708,14 +627,9 @@ for(i in 1:nrow(data)){
   iclade <- ifelse(is.na(iclade), paste0(data$H1, data$H3), iclade)
   data$Ha_clade[i] <- iclade
 }
-table(data$Ha_clade);table(is.na(data$Ha_clade))
 
 #################################
 
-# data$H1 <- NA;data$H3 <- NA; data$H4 <- NA
-# data$H1 <- ifelse(substr(data$Subtype, 1, 2) == "H1", data$Ha_Clade, data$H1)
-# data$H3 <- ifelse(substr(data$Subtype, 1, 2) == "H3", data$Ha_Clade, data$H3)
-# data$H4 <- ifelse(substr(data$Subtype, 1, 2) == "H4", data$Ha_Clade, data$H4)
 data$H_simple <- substr(data$Subtype, 1, 2)
 data$H_complex <- NA
 data$H_complex <- ifelse(data$H_simple == "H1", paste("H1-", data$Ha_clade, sep=""), data$H_complex)
@@ -725,10 +639,6 @@ data$H_complex <- ifelse(substring(data$H_complex,nchar(data$H_complex)-2+1,ncha
                          substr(data$H_complex,1,nchar(data$H_complex)-2),
                          data$H_complex)
 
-# data$N1 <- NA;data$N2 <- NA; data$N6 <- NA
-# data$N1 <- ifelse(substr(data$Subtype, 3, 4) == "N1", data$Ha_clade, data$N1)
-# data$N2 <- ifelse(substr(data$Subtype, 3, 4) == "N2", data$Ha_clade, data$N2)
-# data$N6 <- ifelse(substr(data$Subtype, 3, 4) == "N6", data$Ha_clade, data$N6)
 table(data$Na_clade)
 data$Na_clade <- ifelse(substr(data$Na_clade, 1, 2) == "N1", substr(data$Na_clade, 2, nchar(data$Na_clade)), data$Na_clade)
 data$N_simple <- substr(data$Subtype, 3, 4)
@@ -745,45 +655,13 @@ data$N_complex <- ifelse(substring(data$N_complex,nchar(data$N_complex)-2+1,ncha
 data$H_complex <- ifelse(data$H_complex == "H1-" | data$H_complex == "H3-" | data$H_complex == "H4-", "", data$H_complex)
 data$N_complex <- ifelse(data$N_complex == "N1-" | data$H_complex == "N2-", "", data$N_complex)
 
-# #Some of the N_complex values are structured as "N1Classical|N1.C.1". I will manually fix these instances.
-# data$N_complex <- ifelse(data$N_complex == "N1classicalSwine",             "N1.C", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Classical|N1.C.1",           "N1.C.1", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Classical|N1.C.1.2",         "N1.C.1.2", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Classical|N1.C.2",           "N1.C.2", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Classical|N1.C.2.1",         "N1.C.2.1", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Classical|N1.C.3",           "N1.C.3", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Classical|N1.C.3.1",         "N1.C.3.1", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Classical|N1.C.3.2",         "N1.C.3.2", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1LAIV|N1.C.1.1",              "N1.C.1.1", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N21998A|1998A",                "N21998A", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N21998B|1998B",                "N21998B", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N22002|2002",                  "N22002", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N22002A|2002A",                "N22002A", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N22002B|2002B",                "N22002B", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N22016|2016",                  "N22016", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N2humanSeasonal|humanSeasonal","N2humanSeasonal", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N2LAIV-98-like|LAIV-98-like",  "N2LAIV-98-like", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N2LAIV-98|LAIV-98",            "N2LAIV-98", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N2LAIV-like|LAIV-like",        "N2LAIV-like", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N2LAIV|LAIV",                  "N2LAIV", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1Pandemic|N1.P",              "N1pdm", data$N_complex)
-# data$N_complex <- ifelse(data$N_complex == "N1" | data$N_complex == "N2",  "", data$N_complex)
-
 any(is.na(data$Subtype))
 any(is.na(data$Constellation))
 data$Subtype <- ifelse(is.na(data$Subtype), "", data$Subtype)
 data$Constellation <- ifelse(is.na(data$Constellation) | data$Constellation == "", "------", data$Constellation)
 
-#Noticing that not all rows with blank constellations have all missing values on the interior genes, I can reconstruct these constellations
-#Doing so automatically would be complex, so I'll do it manually for now.
-# data$Constellation <- ifelse(data$Strain == "A/swine/Georgia/21TOSU0123/2021", "TTPPPT", data$Constellation)
-# data$Constellation <- ifelse(data$Strain == "A/swine/Illinois/21TOSU2086/2021", "----PT", data$Constellation)
-# data$Constellation <- ifelse(data$Strain == "A/swine/Kentucky/21TOSU2533/2021", "---PPT", data$Constellation)
-# data$Constellation <- ifelse(data$Strain == "A/swine/Indiana/21TOSU3125/2021", "T-PPPT", data$Constellation)
-
 data$UID_simple <- paste0(data$Subtype, data$Constellation);table(data$UID_simple)
 data$UID_complex <- paste0(data$H_complex, data$N_complex, data$Constellation)
-
 data$H1 <- NULL; data$H3 <- NULL; data$H4 <- NULL; data$N1 <- NULL; data$N2 <- NULL; data$N6 <- NULL
 
 ##############################
@@ -791,6 +669,7 @@ data$H1 <- NULL; data$H3 <- NULL; data$H4 <- NULL; data$N1 <- NULL; data$N2 <- N
 ###############################For this publication, we set an end date of the data at December 31, 2022, dropping all data from 2023 and beyond
 dim(data)
 data <- data[which(as.numeric(data$Date_year) < 2023),]
+data <- data[order(data$Date),]
 dim(data)
 # data_dmax <- as.Date("2022-12-31") # this was written, treading the date cutoff above as if we have no knowledge after,
 # but we in fact do, so we don't need to use this date for the window calculation.
@@ -853,8 +732,6 @@ head(df2);dim(df2)
 head(data_uniq);dim(data_uniq)
 df3 <- merge(df2, data_uniq, by="UID_complex", all.y=FALSE);dim(df3) # df3 is a precursor to data_uniq
 
-
-
 ##############################
 ##############################
 ##############################
@@ -888,17 +765,7 @@ for(i in 1:length(UIDs)){
 }
 
 df4 <- merge(df3, dfstore, by.x="UID_complex", by.y="con", all=TRUE)
-
-# df4[which(is.na(df4$State_first)),]
-# data[which(data$UID_complex == "H1gammaN1classicalSwinePTPTPT"),]
-# df4[which(df4$UID_complex == "H1gammaN1classicalSwinePTPTPT"),]
-
 col.num <- which(colnames(df4) %in% c("state_source","State_first"))
-df4[,sort(c(col.num))]
-
-# if(all(df4$State_first == df4$state_source)){
-# df4$State_first <- NULL
-# }
 data_uniq <- df4
 
 data_uniq$Persistence_scaled <- data_uniq$Persistence/mean(data_uniq$Persistence, na.rm=T)
@@ -938,15 +805,9 @@ colnames(data_usda_hbi_agg) <- c("State_code","Mean_hog_inventory_breeding")
 data_usda_agg <- merge(data_usda_hi_agg, data_usda_hbi_agg, by="State_code", all=TRUE)
 plot(data_usda_agg$Mean_hog_inventory, data_usda_agg$Mean_hog_inventory_breeding)
 
-# state_total <- merge(ss_mut, data_usda_agg, by="State_code", all=TRUE)
-# plot(state_total$Mean_hog_inventory_breeding, state_total$Source_Sink_Score)
-
 df <- as.data.frame(table(data$State))
 colnames(df) <- c("State_code","Cases")
 
-# state_total <- merge(state_total, df, by="State_code", all=TRUE)
-rm(data_usda_agg, data_usda_hbi, data_usda_hbi_agg, data_usda_hi, data_usda_hi_agg, df)
-rm(dat, data_subset, data1, data2, df2, df3, df4, dfstore, list_sinks, list_sources, states)
 data$Bin_quarter <- NA
 data$Bin_quarter <- ifelse(month(as.POSIXlt(data$Date, format="%d/%m/%Y")) == 3 |
                              month(as.POSIXlt(data$Date, format="%d/%m/%Y")) == 4 |
@@ -989,10 +850,18 @@ write.csv(data_uniq, "data_uniq.csv", quote=FALSE)
 # data_nona:          data, but excludes samples with incomplete and missing constellations and clades
 # data_uniq:          all unique data from data_nona, with summary statistics
 
+rm(data_usda_agg, data_usda_hbi, data_usda_hbi_agg, data_usda_hi, data_usda_hi_agg)
+rm(dat, data_subset, data1, data2, df, df2, df3, df4, dfstore, list_sinks, list_sources, states, col.num)
+rm(temp1, temp2, temp3, con, i, iclade, j, prop, sel, state_first, state_sink, state_source)
+rm(data3_HA, data3_NA, data3_rec_HA, data3_rec_NA, data3_reclassifications, data3m, data3m_HA, data3m_NA, data3)
+rm(data2_HA, data2_NA, data2_rec_HA, data2_rec_NA, data2_reclassifications, data2m, data2m_HA, data2m_NA)
+rm(data_temp, data_keepers)
+
 ##############################
 ##############################
 ##############################
-#######
+### We save the progress here.
+### While the rest of the script produces some values cited in the paper and creates inputs for Microreact, nothing created needs to be saved in .RData.
 save.image("IAV_Sources_and_Sinks.RData")
 #######
 
@@ -1080,12 +949,6 @@ head(sort(table(data_nona_TVVPPT$Pairing), decreasing=TRUE), n=1);100*(sort(tabl
 head(sort(table(data_nona_TTVTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTVTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTVTPT))
 head(sort(table(data_nona_TTVPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTVPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTVPPT))
 
-
-# #percentage of the dataset matching the pairing
-# head(sort(table(data_nona_TTTTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTTTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona))
-# head(sort(table(data_nona_TTTPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTTPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona))
-# head(sort(table(data_nona_TTPPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTPPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona))
-
 #for the abstract:
 #grouping by subtype
 data_nona_H1N1 <- data_nona[which(data_nona$Subtype == "H1N1"),]
@@ -1160,23 +1023,8 @@ length(table(data_2017plus$H_N_complex))-(1+1+1+8) #using data, not data_nona, t
 # 8 more end with "N2 "
 
 ##############################
-##############################
-##############################
-rm(data_nona_2022, data_nona_no2022, data_nona_2022_TTTPPT, data_nona_2022_TTPPPT, data_nona_no2022_TTTPPT)
-
-##############################
-##############################
-##############################
-data_V <- data[grep("V", data$Constellation), c("Date","Constellation","Strain") ];data_V
-write.csv(data_V,"data_v.csv")
-
-##############################
-##############################
-##############################
 ### Input file for microreact figure:
 
-# data_nona_microreact <- data;dim(data_nona)
-# # data_nona <- data_nona[data_nona$Constellation %!in% constellations_exclude,];dim(data_nona)
 data_nona_microreact <- data
 data_nona_microreact <- data_nona_microreact[data_nona_microreact$H_complex %!in% hclades_exclude,];dim(data_nona_microreact)
 data_nona_microreact <- data_nona_microreact[data_nona_microreact$N_complex %!in% nclades_exclude,];dim(data_nona_microreact)
@@ -1185,7 +1033,6 @@ UIDs_include <- intersect(c(unique(data$UID_complex[grep("H", data$UID_complex)]
                           c(unique(data$UID_complex[grep("V", data$UID_complex)])))
 
 data_5y <- data_nona_microreact[which(data_nona_microreact$Date > (date_max - years(5))),] #gather the data with dates later than 5 years before the final date in the dataset
-
 data_5y <- merge(data_5y, centroids, by.x="State", by.y="postal_code")
 data_5y <- data_5y[,c("Ha_clade","Date","State","lng","lat")]
 
@@ -1209,11 +1056,9 @@ data_5ym <- merge(data_5y_sort, colors, by.x="Ha_clade", by.y="clade", all.x=TRU
 table(data_5ym$Ha_clade);any(is.na(data_5ym$Ha_clade))
 plot(data_5y_sort$Date)
 
-# colnames(data_5ym) <- c("Clade","Date","State","Longitude","Latitude")
 colnames(data_5ym) <- c("Clade","Date","State","Longitude","Latitude","Clade__color")
 write.csv(data_5ym, "microreact_input_5y.csv", row.names=FALSE)
 
-rm(data_nona_microreact, data_5y, data_5y_sort, data_5ym, centroids, colors_H1, colors_H3, colors, UIDs_include)
 ##############################
 ##############################
 ##############################
