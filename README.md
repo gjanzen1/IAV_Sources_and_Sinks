@@ -15,7 +15,7 @@ This manuscript summarizes 13 years of influenza A virus evolution in the swine 
 ## Outline
 
 ### Script 1
-This script brings together a lot of data, cleans it, formats it, and produces a few data frames that the following scripts will use. This script must be run once to build the `IAV_Sources_and_Sinks.RData` file, which all following scripts will load into memory before progressing. Some summary analyses are also run in this script.
+This script brings together a lot of data, cleans it, formats it, and produces a few data frames that the following scripts will use. This script must be run once to build the `IAV_Sources_and_Sinks.RData` file, which all following scripts will load into memory before progressing. Some summary analyses are also run in this script. While not strictly necessary, I recommend clearing the environment before moving on to Script 2 or Script 3, either by restarting RStudio or by using `rm(list=ls())`, as it will clear resources for later.
 
 ### Script 2
 This script runs the Zeta diversity analyses and produces the associated plots. Core functionality is provided with the [`zetadiv` package](https://cran.r-project.org/web/packages/zetadiv/index.html). You must load `IAV_Sources_and_Sinks.RData` from Script 1 to run this script. This script saves nothing to the .RData file.
