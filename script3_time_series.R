@@ -1,14 +1,13 @@
+
 ################
 ### This script generates statistics and plots related to time series analyses.
+### Run script1 before running this script.
 ################
 
 setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
-load("IAV_Sources_and_Sinks.RData")
-# save.image("IAV_Sources_and_Sinks.RData")
+load("IAV_Sources_and_Sinks.RData") # required to run this script
 
-# ##########################
-# install.packages("TTR")
-# ##########################
+##########################
 
 library("data.table")
 library("stringr")
@@ -77,12 +76,6 @@ png("Plots/script3_case_frequency_over_time.png",width=1000)
 plot
 dev.off()
 
-### First try at temporal decomposition
-# https://rpubs.com/davoodastaraky/TSA1
-# tempSMA3 <- SMA(temp3$Freq, n=(dmax-dmin)/365.25)
-# plot.ts(tempSMA3)
-# stats::decompose(temp3)
-
 tempts <- ts(temp3$Freq, start=c(temp3$Year[1],temp3$Var2[1]), end=c(temp3$Year[nrow(temp3)],temp3$Var2[nrow(temp3)]), frequency=52)
 # m <- stats::stl(tempts, s.window="periodic") # this line can be modified to produce highly customizable time series plots
 # m <- stats::decompose(tempts, type="multiplicative") # this line can be used to change the seasonal and random plots to be multiplicative effects
@@ -122,7 +115,7 @@ plot2 <- ggplot(seasonal, aes(y=x, x=index)) +
   #xlim(0.95,15) +
   labs(title="Seasonal component of change in number of IAV cases over time",
        x ="Week",
-       y = "Number of IAV cases within a week");plot2
+       y = "Number of IAV cases within a week")
 
 pdf("Plots/script3_case_frequency_over_time_decomposition_seasonal.pdf",width=8, height=5)
 plot2
@@ -174,7 +167,7 @@ pdf("Plots/script3_case_frequency_over_time_month.pdf",width=8)
 plot
 dev.off()
 
-
+rm(temp,temp1,temp2,temp3)
 ######################################
 data_usda <- as.data.frame(read.csv("Data/usda_quick_stats_10_3_24.csv"))
 data_usda$State_code <- state.abb[match(tolower(data_usda$State),tolower(state.name))]
@@ -268,13 +261,10 @@ ss %>%
 colnames(ss_mut) <- c("State","Source Events","Sink Events","Source-Sink Score")
 ss_melt <- melt(ss_mut)
 
-# Let's see if we can add scaled hog production values to this plot:
 ss_usda <- merge(ss, data_usda_agg, by.x="State", by.y="State", all=TRUE)
 ss_usda <- ss_usda[!is.na(ss_usda$SS_Score),]
-
 ss_usda2 <- ss_usda[,-ncol(ss_usda)]
 ss_usda2_melt <- melt(ss_usda2)
-
 ss_usda2_melt_m <- merge(ss_usda2_melt, ss_usda, by.x="State", by.y="State", all.x=TRUE, all.y=FALSE)
 ss_usda2_melt_m_source <- ss_usda2_melt_m[which(ss_usda2_melt_m$variable == "Source_Count"),]
 ss_usda2_melt_m_source <- as.data.frame(lapply(ss_usda2_melt_m_source, function (x) if (is.factor(x)) factor(x) else x))
@@ -285,7 +275,6 @@ influential_obs_source <- as.numeric(names(cooksD_source)[(cooksD_source > (4/n)
 ss_usda2_melt_m_source$Source_CooksD <- cooksD_source
 ss_usda2_melt_m_source$Source_Outlier <- ifelse(ss_usda2_melt_m_source$Source_CooksD > 4/n, "Outlier","Non-Outlier")
 ss_usda2_melt_m_source2 <- ss_usda2_melt_m_source[,c("State","Source_CooksD","Source_Outlier")]
-
 ss_usda2_melt_m_sink <- ss_usda2_melt_m[which(ss_usda2_melt_m$variable == "Sink_Count"),]
 ss_usda2_melt_m_sink <- as.data.frame(lapply(ss_usda2_melt_m_sink, function (x) if (is.factor(x)) factor(x) else x))
 model <- lm(Production ~ value, data = ss_usda2_melt_m_sink)
@@ -295,10 +284,7 @@ influential_obs_sink <- as.numeric(names(cooksD_sink)[(cooksD_sink > (4/n))])
 ss_usda2_melt_m_sink$Sink_CooksD <- cooksD_sink
 ss_usda2_melt_m_sink$Sink_Outlier <- ifelse(ss_usda2_melt_m_sink$Sink_CooksD > 4/n, "Outlier","Non-Outlier")
 ss_usda2_melt_m_sink2 <- ss_usda2_melt_m_sink[,c("State","Sink_CooksD","Sink_Outlier")]
-
-head(ss_usda2_melt_m_source2);head(ss_usda2_melt_m_sink2)
 ssmerge <- merge(ss_usda2_melt_m_source2, ss_usda2_melt_m_sink2, by="State", all=TRUE)
-
 ss_usda_m <- merge(ss_usda, ssmerge, by="State", all.x=TRUE)
 
 eq <- function(x,y) {
@@ -316,7 +302,6 @@ ss_usda %>%
   mutate(State=factor(State, levels=State)) -> ss_usda_mut
 ss_usda_mut_melt <- melt(ss_usda_mut)
 
-# ymax <- max(c(max(ss_usda$Source_Count, na.rm=TRUE),max(ss_usda$Sink_Count, na.rm=TRUE)))
 ss_usda
 ss_usda %>%
   arrange(-SS_Score) %>%
@@ -326,7 +311,6 @@ colnames(ss_usda_mut2) <- c("State","Source Events","Sink Events","Source-Sink S
 ymax <- max(max(ss_usda$Sink_Count, na.rm=TRUE),max(ss_usda$Source_Count, na.rm=TRUE))
 ss_usda$Production <- ss_usda$Production/1000000
 scaleRight <- max(ss_usda$Production)/ymax
-# scaleRight <- max(ss_usda$Production)/max(ss_usda$SS_Score)
 
 ss_usda_mut2$Production <- (ss_usda_mut2$Production/1000000)/scaleRight
 
@@ -384,9 +368,7 @@ png("Plots/script3_begin_end_states_production.png", width=800, height=350)
 plot2
 dev.off()
 
-# rm(dat, data_usda_agg, list_sinks, list_sources, plot, plot1, plot2, sink_table, source_table,
-#    ss, ss_usda, ss_usda_mut, ss_usda_mut_melt, ss_usda_mut2, ss_usda_mut2_melt)
-rm(con, i, scaleRight, sinks, sources, ymax)
+rm(i, scaleRight, sinks, sources, ymax)
 
 #######################################
 ### When do constellations begin and end?
@@ -553,9 +535,6 @@ dim(df_mut[which(df_mut$Date_min > as.Date("2013/01/01", tryFormats = c("%Y-%m-%
 dim(df_mut[which(df_mut$Date_min > as.Date("2018/01/01", tryFormats = c("%Y-%m-%d", "%Y/%m/%d"))&
                    df_mut$Date_max > dmax-window),])
 
-# rm(plot2, plot3, plot4)
-# rm(df, df_mut, df_mut2)
-
 df_mut<- df_mut[seq(dim(df_mut)[1],1),]
 df_mut$index <- 1:nrow(df_mut)
 
@@ -681,9 +660,17 @@ visNetwork(nodes_m, ssldf_threshold,
   visIgraphLayout(layout = "layout_with_fr") %>%
   visEdges(arrows = "from")
 
-#######
+##############################
+##############################
+##############################
+### We save the progress here.
+### While the rest of the script produces some values cited in the paper, nothing created needs to be saved in .RData.
 save.image("IAV_Sources_and_Sinks.RData")
 #######
+
+##############################
+##############################
+##############################
 
 #make a data_2020 and data_2021, and compare H_complex between them
 data_2020 <- data_nona[which(data_nona$Date_year < 2021),];dim(data_2020)
@@ -719,6 +706,5 @@ mean(table(df2$Year_min)[5:9]) #mean number of new recombinants 2013-2018
 mean(table(df2$Year_min)[10:14]) #mean number of new recombinants 2018-2023
 mean(table(df2$Year_min)[13:14]) #mean number of new recombinants 2021-2023
 
-# prob of sink given starting state
-ss_melt
-sink_table
+
+
