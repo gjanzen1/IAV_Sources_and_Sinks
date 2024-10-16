@@ -370,6 +370,11 @@ dev.off()
 
 rm(i, scaleRight, sinks, sources, ymax)
 
+######State lists for 3.3:
+sort(as.character(ss_melt[ss_melt$variable == "Source-Sink Score" & ss_melt$value > 0, "State"]));length(ss_melt[which(ss_melt$variable =="Source-Sink Score" & ss_melt$value > 0),]$State)
+sort(as.character(ss_melt[ss_melt$variable == "Source-Sink Score" & ss_melt$value == 0, "State"]));length(ss_melt[which(ss_melt$variable =="Source-Sink Score" & ss_melt$value == 0),]$State)
+sort(as.character(ss_melt[ss_melt$variable == "Source-Sink Score" & ss_melt$value < 0, "State"]));length(ss_melt[which(ss_melt$variable =="Source-Sink Score" & ss_melt$value < 0),]$State)
+
 #######################################
 ### When do constellations begin and end?
 df$Date_min <- as.Date(df$Date_min)
@@ -502,12 +507,15 @@ png("Plots/script3_begin_end_timeline_sort_late.png", width = 750, height = 2000
 plot3_late
 dev.off()
 
+################################
+# Stats for 3.3:
 df_mut$Date_duration <- as.numeric(df_mut$Date_max-df_mut$Date_min)
-mean(df_mut$Date_duration)
+mean(df_mut$Date_duration)/365.25 #mean duration, in years
 median(df_mut$Date_duration)
 hist(df_mut$Date_duration, breaks=40)
 nrow(df_mut[which(df_mut$Date_duration > mean(df_mut$Date_duration)),])
 # Only counting clades that were detected more than once (have a duration above 0)
+nrow(df_mut[which(df_mut$Date_duration == 0),])
 mean(df_mut$Date_duration[which(df_mut$Date_duration > 0)])
 median(df_mut$Date_duration[which(df_mut$Date_duration > 0)])
 nrow(df_mut[which(df_mut$Date_duration >= 365),]) #118 have duration longer than 365 days
@@ -549,6 +557,10 @@ ggplot(df_mut, aes(x=index, y = lag)) +
   geom_line(color = "cadetblue", linewidth = 1) +
   geom_line(aes(y = rollmean(lag, 20, na.pad = TRUE, align = "center")), linewidth = 1) +
   theme(axis.title = element_blank())
+################################
+
+
+
 
 ###########################
 ### Flow chart of the spread of constellations across states
@@ -672,6 +684,18 @@ save.image("IAV_Sources_and_Sinks.RData")
 ##############################
 ##############################
 
+##########################
+##### Some stats in 3.3:
+
+nrow(data_nona_2017plus[which(data_nona_2017plus$M == "pdm"),])/nrow(data_nona_2017plus)
+
+table(data_nona_2022$Constellation)
+
+nrow(data_nona_2022[which(data_nona_2022$M == "pdm"),])/nrow(data_nona_2022)
+PP <- grep("^([^P]*P[^P]*){2,}$", names(table(data_nona_2022$Constellation)), value = TRUE)
+nrow(data_nona_2022[which(data_nona_2022$Constellation %in% PP),])/nrow(data_nona_2022)
+##########################
+
 #make a data_2020 and data_2021, and compare H_complex between them
 data_2020 <- data_nona[which(data_nona$Date_year < 2021),];dim(data_2020)
 data_2021 <- data_nona[which(data_nona$Date_year > 2020),];dim(data_2021)
@@ -702,9 +726,11 @@ df2 <- df
 df2$Year_min <- substr(df2$Date_min, 1, 4);table(df2$Year_min)
 plot(df2$Year_min)
 mean(table(df2$Year_min)[2:4]) #mean number of new recombinants 2010-2012
-mean(table(df2$Year_min)[5:9]) #mean number of new recombinants 2013-2018
+mean(table(df2$Year_min)[5:8]) #mean number of new recombinants 2013-2017
 mean(table(df2$Year_min)[10:14]) #mean number of new recombinants 2018-2023
 mean(table(df2$Year_min)[13:14]) #mean number of new recombinants 2021-2023
+table(df2$Year_min)
+#####
 
 
 
