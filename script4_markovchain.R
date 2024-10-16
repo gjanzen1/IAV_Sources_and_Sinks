@@ -59,7 +59,8 @@ for(i in 1:length(statestringlist_xx)){
   const <- names(statestringlist_xx)[i]
   
   dat <- data_sub[which(data_sub$UID_complex == const),];dim(dat)
-  xxstring <- ifelse(max(dat$Date) > data_dmax-window, list(c(statestringlist_repeat_xx[[i]], "XX")), list(c(statestringlist_repeat_xx[[i]])))
+  # Below, we append "XX" to the state string if the constellation's final detection is before the cut-off date, with uncertainty window
+  xxstring <- ifelse(max(dat$Date) < data_dmax-window, list(c(statestringlist_repeat_xx[[i]], "XX")), list(c(statestringlist_repeat_xx[[i]]))) ### GGG < or > ?
   statestringlist_repeat_xx[[i]] <- unlist(xxstring)
   xxstring <- NULL
   
@@ -675,6 +676,9 @@ mean(tm_repeat_xx[,which(colnames(tm_repeat_xx) == "IA")]) # mean probability of
 mean(rowSums(tm_repeat[,which(colnames(tm_repeat) != "IA")])) # mean probability of not being detected next in Iowa
 mean(tm_repeat[,which(colnames(tm_repeat) != "IA")]) # mean probability of being detected next in any other state
 
+#probability of next "detection" being an XX (i.e., probability that a given detection is the last of its kind)
+mean(tm_repeat_xx[,which(colnames(tm_repeat_xx) == "XX")])
+
 #probability that you end up at XX, based on your FIRST/STARTING state
 statestringlist_repeat_xx
 
@@ -725,12 +729,12 @@ statestringlist_repeat_xx_no1 <- statestringlist_repeat_xx[sapply(statestringlis
 statestringlist_subset_no1 <- statestringlist_subset[sapply(statestringlist_subset, length) > 1];length(statestringlist_subset_no1)
 statestringlist_repeat_subset_no1 <- statestringlist_repeat_subset[sapply(statestringlist_repeat_subset, length) > 1];length(statestringlist_repeat_subset_no1)
 
-statestring_masterlist <- list(statestringlist_no1,
-                               statestringlist_repeat_no1,
-                               statestringlist_xx_no1,
-                               statestringlist_repeat_xx_no1,
-                               statestringlist_subset_no1,
-                               statestringlist_repeat_subset_no1)
+statestring_masterlist <- list(statestringlist_no1,                #no repeated states, minus strings with length of 1, XX excluded
+                               statestringlist_repeat_no1,         #repeated states, minus strings with length of 1, XX excluded
+                               statestringlist_xx_no1,             #no repeated states, minus strings with length of 1, XX included
+                               statestringlist_repeat_xx_no1,      #repeated states, minus strings with length of 1, XX included
+                               statestringlist_subset_no1,         #top pork producers, no repeats, minus strings with length of 1, XX excluded
+                               statestringlist_repeat_subset_no1)  #top pork producers, repeated states, minus strings with length of 1, XX excluded
 descriptor_repeat <- c("no",
                        "repeat",
                        "no",
@@ -871,11 +875,13 @@ for(i in 1:length(statestring_masterlist)){
   trials_list_master[[i]] <- unlist(trials_list)
 }
 
-accuracy <- sum(counter_list_master[[1]])/sum(trials_list_master[[1]]);accuracy                              #no repeats in the model, no XX
-accuracy_repeat <- sum(counter_list_master[[2]])/sum(trials_list_master[[2]]);accuracy_repeat                #repeats in model, no XX
+accuracy <- sum(counter_list_master[[1]])/sum(trials_list_master[[1]]);accuracy                              #predict final state in string, barring repeats, barring XX
+accuracy_xx <- sum(counter_list_master[[3]])/sum(trials_list_master[[3]]);accuracy_xx                        #predict final state in string, barring repeats, permitting XX
+accuracy_subset <- sum(counter_list_master[[5]])/sum(trials_list_master[[5]]);accuracy_subset                #predict final state in string, given top 10 swine states, barring repeats, barring XX
 
-accuracy_subset <- sum(counter_list_master[[5]])/sum(trials_list_master[[5]]);accuracy_subset                #top 10 swine states, no repeat, no XX
-accuracy_subset_repeat <- sum(counter_list_master[[6]])/sum(trials_list_master[[6]]);accuracy_subset_repeat  #top 10 swine states, repeats, no XX
+accuracy_repeat <- sum(counter_list_master[[2]])/sum(trials_list_master[[2]]);accuracy_repeat                #predict final state in string, permitting repeats, barring XX
+accuracy_xx_repeat <- sum(counter_list_master[[4]])/sum(trials_list_master[[4]]);accuracy_xx_repeat          #predict final state in string, permitting repeats, permitting XX
+accuracy_subset_repeat <- sum(counter_list_master[[6]])/sum(trials_list_master[[6]]);accuracy_subset_repeat  #predict final state in string, given top 10 swine states, permitting repeats, barring XX
 
 #####################################
 
@@ -884,15 +890,6 @@ save.image("IAV_Sources_and_Sinks.RData")
 #######
 
 # https://datascience.blog.wzb.eu/2018/05/31/three-ways-of-visualizing-a-graph-on-a-map/
-
-library(assertthat)
-library(dplyr)
-library(purrr)
-library(igraph)
-library(ggplot2)
-library(ggraph)
-library(ggmap)
-library(ggpolypath)
 
 ###########################
 #Modify the following line to select the tm you wish to plot, labeling it tm_map:
