@@ -403,15 +403,15 @@ for(i in 1:length(repeated_strains)){
   # i <- 1
   dat <- data_temp[which(data_temp$Strain == repeated_strains[i]),]
   if(length(unique(rowSums(!is.na(dat)))) < nrow(dat)){ #if there are instances where there are fewer row sums than rows, then there are ties.
-    print(paste0("i = ",i,", ties present, dropping missing Constellations and rechecking."))
-    print(paste0(rowSums(!is.na(dat))))
+    # print(paste0("i = ",i,", ties present, dropping missing Constellations and rechecking."))
+    # print(paste0(rowSums(!is.na(dat))))
     dat <- dat[which(!is.na(dat$Constellation)),]
     if(length(unique(rowSums(!is.na(dat)))) < nrow(dat)){ #if there are instances where there are fewer row sums than rows, then there are ties.
-      print("Ties are still present. Dropping missing Ha and Na clades and rechecking.")
+      # print("Ties are still present. Dropping missing Ha and Na clades and rechecking.")
       dat <- dat[which(!is.na(dat$Ha_clade)),]
       dat <- dat[which(!is.na(dat$Na_clade)),]
     }
-    print("Exiting tie loop.")
+    # print("Exiting tie loop.")
   }
   dat <- dat[which.max(rowSums(!is.na(dat))),]
   data_keepers <- rbind(data_keepers, dat)
@@ -450,7 +450,7 @@ rm(temp, tbl, repeated_barcodes)
 #See the conversation with Tavis Anderson on Teams on 11/22/2023
 data[which(data$Strain == "A/swine/Tennessee/A01785435/2018"),]
 data$Subtype <- ifelse(data$Strain == "A/swine/Tennessee/A01785435/2018",  "H1N1", data$Subtype)
-data$Na_clade <- ifelse(data$Strain == "A/swine/Tennessee/A01785435/2018", "N1.C.3.2", data$N2)
+data$Na_clade <- ifelse(data$Strain == "A/swine/Tennessee/A01785435/2018", "N1.C.3.2", data$Na_clade)
 data$N1 <- ifelse(data$Strain == "A/swine/Tennessee/A01785435/2018",       "N1.C.3.2", data$N1)
 data$N2 <- ifelse(data$Strain == "A/swine/Tennessee/A01785435/2018",       NA, data$N2)
 data[which(data$Strain == "A/swine/Minnesota/A02245867/2021"),]
@@ -461,7 +461,20 @@ data$H3 <- ifelse(data$Strain == "A/swine/Minnesota/A02245867/2021",      "1990.
 data[which(data$Subtype == "mixed"),]
 data$Subtype <- ifelse(data$Strain == "A/swine/Minnesota/A01244318/2012",  "H1N1", data$Subtype)
 data$Subtype <- ifelse(data$Strain == "A/swine/Kansas/A01377621/2015",     "H1N1", data$Subtype)
-
+#These strains have a "mixed" constellation or has "A", which we cannot solve, so set to ""
+data[which(data$Constellation == "mixed"),]
+i <- NULL
+for (i in 1:nrow(data)){
+  dat <- data[i,]
+  if(!is.na(dat$Constellation)){
+    if(dat$Constellation == "mixed" | dat$Constellation == "AAAAAA"){
+      dat$PB2 <- dat$PB1 <- dat$PA <- dat$NP <- dat$M <- dat$Constellation <- ""
+    }
+  }
+  data[i,] <- dat
+}
+# data[which(data$Constellation == "mixed"),]
+# data[which(data$Constellation == "AAAAAA"),]
 
 #####################
 #These strains have two subtypes or two strains, we sort this out too.
@@ -499,10 +512,10 @@ for(i in 1:nrow(temp)){
 }
 
 temp$Strain <- ifelse(temp$Strain == "A/swine/Ilinois/A01240775/2011", "A/swine/Illinois/A01240775/2011", temp$Strain)
-temp
+# temp
 
 temp$Strain1 <- temp$Strain2 <- temp$StrainTest <- temp$Selection <- NULL
-ncol(data);ncol(temp)
+# ncol(data);ncol(temp)
 
 data <- rbind(data, temp)
 rm(temp, selection)
@@ -549,14 +562,21 @@ temp$Constellation1 <- temp$Constellation2 <- temp$ConstellationTest <- temp$Con
 
 ncol(data);ncol(temp)
 data <- rbind(data, temp)
-rm(temp, Con1genej, Con2genej, Conm, Conmgenej, constellationi1, constellationi2, m, straini1, straini2)
+rm(temp, Con1genej, Con2genej, Conm, Conmgenej, constellationi1, constellationi2, straini1, straini2)
 
 #######
-# Some constellations contain an X character, rather than the appropriate -, or are "NA"/NA. We fix that here.
+# Some constellations contain an X or A character, rather than the appropriate -, or are "NA"/NA. We fix that here.
 data$Constellation <- gsub('X', '-', data$Constellation);table(data$Constellation)
+data$Constellation <- gsub('A', '-', data$Constellation);table(data$Constellation)
 data$Constellation <- ifelse(data$Constellation == "NA" | is.na(data$Constellation) | data$Constellation == "",
                              "------", data$Constellation)
-
+data$PB2 <- ifelse(data$PB2 == "A" | data$PB2 == "", "-", data$PB2);table(data$PB2)
+data$PB1 <- ifelse(data$PB1 == "A" | data$PB1 == "", "-", data$PB1);table(data$PB1)
+data$PA <- ifelse(data$PA == "A" | data$PA == "", "-", data$PA);table(data$PA)
+data$NP <- ifelse(data$NP == "A" | data$NP == "", "-", data$NP);table(data$NP)
+data$M <- ifelse(data$M == "A" | data$M == "", "-", data$M);table(data$M)
+data$NS <- ifelse(data$NS == "A" | data$NS == "", "-", data$NS);table(data$NS)
+table(data$Constellation)
 ###################
 ###################
 ###################
@@ -608,24 +628,25 @@ data$NS <- ifelse(data$NS == "V", "LAIV", data$NS)
 table(data$Na_clade);table(is.na(data$Na_clade))
 data$N1 <- ifelse(is.na(data$N1), "", data$N1);head(data$N1)
 data$N2 <- ifelse(is.na(data$N2), "", data$N2);head(data$N2)
-i <- NULL
+i <- iclade <- dat <- NULL
 for(i in 1:nrow(data)){
-  # i <- 1
-  iclade <- data$Na_clade[i]
-  iclade <- ifelse(is.na(iclade), paste0(data$N1, data$N2), iclade)
-  data$Na_clade[i] <- iclade
+  dat <- data[i,]
+  iclade <- dat$Na_clade
+  iclade <- ifelse(is.na(iclade), paste0(dat$N1, dat$N2), iclade)
+  dat$Na_clade <- iclade
+  data[i,] <- dat
 }
-table(data$Na_clade);table(is.na(data$Na_clade))
 
 table(data$Ha_clade);table(is.na(data$Ha_clade))
 data$H1 <- ifelse(is.na(data$H1), "", data$H1);head(data$H1)
 data$H3 <- ifelse(is.na(data$H3), "", data$H3);head(data$H3)
-i <- NULL
+i <- iclade <- dat <- NULL
 for(i in 1:nrow(data)){
-  # i <- 1
-  iclade <- data$Ha_clade[i]
-  iclade <- ifelse(is.na(iclade), paste0(data$H1, data$H3), iclade)
-  data$Ha_clade[i] <- iclade
+  dat <- data[i,]
+  iclade <- dat$Ha_clade
+  iclade <- ifelse(is.na(iclade), paste0(dat$H1, dat$H3), iclade)
+  dat$Ha_clade <- iclade
+  data[i,] <- dat
 }
 
 #################################
@@ -639,8 +660,9 @@ data$H_complex <- ifelse(substring(data$H_complex,nchar(data$H_complex)-2+1,ncha
                          substr(data$H_complex,1,nchar(data$H_complex)-2),
                          data$H_complex)
 
-table(data$Na_clade)
-data$Na_clade <- ifelse(substr(data$Na_clade, 1, 2) == "N1", substr(data$Na_clade, 2, nchar(data$Na_clade)), data$Na_clade)
+data$Na_clade <- ifelse(substr(data$Na_clade, 1, 2) == "N1", 
+                        substr(data$Na_clade, 2, nchar(data$Na_clade)), 
+                        data$Na_clade)
 data$N_simple <- substr(data$Subtype, 3, 4)
 data$N_complex <- NA
 data$N_complex <- ifelse(data$N_simple == "N1", paste("N1-", data$Na_clade, sep=""), data$N_complex)
@@ -724,12 +746,7 @@ df2$Date_min_note <- df2$Date_max_note <- df2$Persistence_note <- NA
 df2$Date_min_note <- ifelse(df2$Date_min > data_dmin+window, "ok","too_early")
 df2$Date_max_note <- ifelse(df2$Date_max < data_dmax-window, "ok","too_late")
 df2$Persistence_note <- ifelse(df2$Persistence > 1, "ok","too_few") 
-plot(df2$Count, df2$Proportion)
-plot(df2$Count, df2$Count_per_day)
-plot(df2$Count_per_day, df2$Proportion)
 
-head(df2);dim(df2)
-head(data_uniq);dim(data_uniq)
 df3 <- merge(df2, data_uniq, by="UID_complex", all.y=FALSE);dim(df3) # df3 is a precursor to data_uniq
 
 ##############################
@@ -772,9 +789,7 @@ data_uniq$Persistence_scaled <- data_uniq$Persistence/mean(data_uniq$Persistence
 data_uniq$Date_min_year <- as.factor(substr(data_uniq$Date_min, 1, 4))
 data_uniq$Date_min_year <- factor(data_uniq$Date_min_year)
 
-# rm(df2, df3, dfstore, dat, data_subset, states, list_sinks, list_sources, sink_table, source_table, data1, data2)
-# rm(date_max, date_min, i, con, Maxdist, prop, sinks, sources, state_first, state_sink, state_source, ui)
-
+table(data_uniq$UID_complex)
 ##############################
 ##############################
 ##############################
@@ -868,56 +883,52 @@ save.image("IAV_Sources_and_Sinks.RData")
 ##############################
 ##############################
 ##############################
-#Pulling stats for Table 1:
+#Pulling stats for Table 1 and first part of 3.2:
 
 data_nona$Pairing <- substr(data_nona$UID_complex, 1, nchar(data_nona$UID_complex)-6)
 data_nona_2022 <- data_nona[which(data_nona$Date_year == "2022"),]
 data_nona_no2022 <- data_nona[which(data_nona$Date_year != "2022"),]
 
 sort(table(data_nona_2022$Constellation), decreasing=TRUE)[1:9]
-
 nrow(data_nona_2022)
 
-data_nona_2022_TTTTPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTTTPT"),]
-nrow(data_nona_2022_TTTTPT);100*(nrow(data_nona_2022_TTTTPT)/nrow(data_nona_2022))
 data_nona_2022_TTTPPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTTPPT"),]
 nrow(data_nona_2022_TTTPPT);100*(nrow(data_nona_2022_TTTPPT)/nrow(data_nona_2022))
-data_nona_2022_TTPPPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTPPPT"),]
-nrow(data_nona_2022_TTPPPT);100*(nrow(data_nona_2022_TTPPPT)/nrow(data_nona_2022))
-
-data_nona_2022_TTPTPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTPTPT"),]
-nrow(data_nona_2022_TTPTPT);100*(nrow(data_nona_2022_TTPTPT)/nrow(data_nona_2022))
-data_nona_2022_PPPPPP <- data_nona_2022[which(data_nona_2022$Constellation == "PPPPPP"),]
-nrow(data_nona_2022_PPPPPP);100*(nrow(data_nona_2022_PPPPPP)/nrow(data_nona_2022))
-data_nona_2022_TTPPPP <- data_nona_2022[which(data_nona_2022$Constellation == "TTPPPP"),]
-nrow(data_nona_2022_TTPPPP);100*(nrow(data_nona_2022_TTPPPP)/nrow(data_nona_2022))
+data_nona_2022_TTTTPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTTTPT"),]
+nrow(data_nona_2022_TTTTPT);100*(nrow(data_nona_2022_TTTTPT)/nrow(data_nona_2022))
 data_nona_2022_TVVPPT <- data_nona_2022[which(data_nona_2022$Constellation == "TVVPPT"),]
 nrow(data_nona_2022_TVVPPT);100*(nrow(data_nona_2022_TVVPPT)/nrow(data_nona_2022))
+data_nona_2022_TVVTPT <- data_nona_2022[which(data_nona_2022$Constellation == "TVVTPT"),]
+nrow(data_nona_2022_TVVTPT);100*(nrow(data_nona_2022_TVVTPT)/nrow(data_nona_2022))
+
+data_nona_2022_TTPPPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTPPPT"),]
+nrow(data_nona_2022_TTPPPT);100*(nrow(data_nona_2022_TTPPPT)/nrow(data_nona_2022))
+data_nona_2022_TTPTPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTPTPT"),]
+nrow(data_nona_2022_TTPTPT);100*(nrow(data_nona_2022_TTPTPT)/nrow(data_nona_2022))
+data_nona_2022_TTVPPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTVPPT"),]
+nrow(data_nona_2022_TTVPPT);100*(nrow(data_nona_2022_TTVPPT)/nrow(data_nona_2022))
 data_nona_2022_TTVTPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTVTPT"),]
 nrow(data_nona_2022_TTVTPT);100*(nrow(data_nona_2022_TTVTPT)/nrow(data_nona_2022))
-data_nona_2022_TTVPPT <- data_nona_2022[which(data_nona_2022$Constellation == "TTVPPT"),]
-nrow(data_nona_2022_TTVPPT);100*(nrow(data_nona_2022_TTVTPT)/nrow(data_nona_2022))
 
 #percentage of that constellation matching the pairing
-head(sort(table(data_nona_2022_TTTTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTTTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTTTPT))
 head(sort(table(data_nona_2022_TTTPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTTPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTTPPT))
-head(sort(table(data_nona_2022_TTPPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTPPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTPPPT))
-
-head(sort(table(data_nona_2022_TTPTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTPTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTPTPT))
-head(sort(table(data_nona_2022_PPPPPP$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_PPPPPP$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_PPPPPP))
-head(sort(table(data_nona_2022_TTPPPP$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTPPPP$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTPPPP))
+head(sort(table(data_nona_2022_TTTTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTTTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTTTPT))
 head(sort(table(data_nona_2022_TVVPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TVVPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TVVPPT))
-head(sort(table(data_nona_2022_TTVTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTVTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTVTPT))
+head(sort(table(data_nona_2022_TVVTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TVVTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TVVTPT))
+
+head(sort(table(data_nona_2022_TTPPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTPPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTPPPT))
+head(sort(table(data_nona_2022_TTPTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTPTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTPTPT))
 head(sort(table(data_nona_2022_TTVPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTVPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTVPPT))
+head(sort(table(data_nona_2022_TTVTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2022_TTVTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2022_TTVTPT))
 
 #entire dataset
 nrow(data_nona)
-sort(table(data_nona$Constellation), decreasing=TRUE)
+sort(table(data_nona$Constellation), decreasing=TRUE)[1:9]
 
-data_nona_TTTTPT <- data_nona[which(data_nona$Constellation == "TTTTPT"),]
-nrow(data_nona_TTTTPT);100*(nrow(data_nona_TTTTPT)/nrow(data_nona))
 data_nona_TTTPPT <- data_nona[which(data_nona$Constellation == "TTTPPT"),]
 nrow(data_nona_TTTPPT);100*(nrow(data_nona_TTTPPT)/nrow(data_nona))
+data_nona_TTTTPT <- data_nona[which(data_nona$Constellation == "TTTTPT"),]
+nrow(data_nona_TTTTPT);100*(nrow(data_nona_TTTTPT)/nrow(data_nona))
 data_nona_TTPPPT <- data_nona[which(data_nona$Constellation == "TTPPPT"),]
 nrow(data_nona_TTPPPT);100*(nrow(data_nona_TTPPPT)/nrow(data_nona))
 data_nona_TTTTTT <- data_nona[which(data_nona$Constellation == "TTTTTT"),]
@@ -927,30 +938,25 @@ data_nona_TTPTPT <- data_nona[which(data_nona$Constellation == "TTPTPT"),]
 nrow(data_nona_TTPTPT);100*(nrow(data_nona_TTPTPT)/nrow(data_nona))
 data_nona_PPPPPP <- data_nona[which(data_nona$Constellation == "PPPPPP"),]
 nrow(data_nona_PPPPPP);100*(nrow(data_nona_PPPPPP)/nrow(data_nona))
-data_nona_TTPPPP <- data_nona[which(data_nona$Constellation == "TTPPPP"),]
-nrow(data_nona_TTPPPP);100*(nrow(data_nona_TTPPPP)/nrow(data_nona))
 data_nona_TVVPPT <- data_nona[which(data_nona$Constellation == "TVVPPT"),]
 nrow(data_nona_TVVPPT);100*(nrow(data_nona_TVVPPT)/nrow(data_nona))
-data_nona_TTVTPT <- data_nona[which(data_nona$Constellation == "TTVTPT"),]
-nrow(data_nona_TTVTPT);100*(nrow(data_nona_TTVTPT)/nrow(data_nona))
-data_nona_TTVPPT <- data_nona[which(data_nona$Constellation == "TTVPPT"),]
-nrow(data_nona_TTVPPT);100*(nrow(data_nona_TTVTPT)/nrow(data_nona))
+data_nona_TTPPPP <- data_nona[which(data_nona$Constellation == "TTPPPP"),]
+nrow(data_nona_TTPPPP);100*(nrow(data_nona_TTPPPP)/nrow(data_nona))
+
 
 #percentage of that constellation matching the pairing
-head(sort(table(data_nona_TTTTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTTTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTTTPT))
 head(sort(table(data_nona_TTTPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTTPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTTPPT))
+head(sort(table(data_nona_TTTTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTTTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTTTPT))
 head(sort(table(data_nona_TTPPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTPPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTPPPT))
 head(sort(table(data_nona_TTTTTT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTTTTT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTTTTT))
 
 head(sort(table(data_nona_TTPTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTPTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTPTPT))
 head(sort(table(data_nona_PPPPPP$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_PPPPPP$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_PPPPPP))
-head(sort(table(data_nona_TTPPPP$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTPPPP$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTPPPP))
 head(sort(table(data_nona_TVVPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TVVPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TVVPPT))
-head(sort(table(data_nona_TTVTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTVTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTVTPT))
-head(sort(table(data_nona_TTVPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTVPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTVPPT))
+head(sort(table(data_nona_TTPPPP$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_TTPPPP$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_TTPPPP))
 
+################
 #for the abstract:
-#grouping by subtype
 data_nona_H1N1 <- data_nona[which(data_nona$Subtype == "H1N1"),]
 nrow(data_nona_H1N1);100*(nrow(data_nona_H1N1)/nrow(data_nona))
 data_nona_H1N2 <- data_nona[which(data_nona$Subtype == "H1N2"),]
@@ -962,38 +968,48 @@ head(sort(table(data_nona_H1N1$Pairing), decreasing=TRUE), n=1);100*(sort(table(
 head(sort(table(data_nona_H1N2$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_H1N2$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona))
 head(sort(table(data_nona_H3N2$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_H3N2$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona))
 
+head(sort(table(data_nona$Constellation), decreasing=TRUE), n=3);100*(sum(sort(table(data_nona$Constellation), decreasing=TRUE)[1:3])/nrow(data_nona))
+
+################
 #for section 3.1:
 
+nrow(data)
 sort(table(data$Subtype), decreasing=TRUE)
 sort(table(data$Subtype), decreasing=TRUE)[1]/nrow(data)
 sort(table(data$Subtype), decreasing=TRUE)[2]/nrow(data)
 sort(table(data$Subtype), decreasing=TRUE)[3]/nrow(data)
 
 data$H_N_complex <- paste0(data$H_complex, "_", data$N_complex)
-sort(table(data$H_N_complex), decreasing=TRUE)
-sort(table(data$H_N_complex), decreasing=TRUE)[1]/nrow(data)
-sort(table(data$H_N_complex), decreasing=TRUE)[2]/nrow(data)
-sort(table(data$H_N_complex), decreasing=TRUE)[3]/nrow(data)
-sum(sort(table(data$H_N_complex), decreasing=TRUE)[1:3])/nrow(data)
+sort(table(data$H_N_complex), decreasing=TRUE)[1:10]
+100*sort(table(data$H_N_complex), decreasing=TRUE)[1]/nrow(data)
+100*sort(table(data$H_N_complex), decreasing=TRUE)[2]/nrow(data)
+100*sort(table(data$H_N_complex), decreasing=TRUE)[3]/nrow(data)
+100*sum(sort(table(data$H_N_complex), decreasing=TRUE)[1:3])/nrow(data)
 
 data_2022 <- data[which(data$Date_year == "2022"),]
 sort(table(data_2022$H_complex), decreasing=TRUE)
-sum(sort(table(data_2022$H_complex), decreasing=TRUE)[1:3])/nrow(data_2022)
+100*sum(sort(table(data_2022$H_complex), decreasing=TRUE)[1:3])/nrow(data_2022)
 length(sort(table(data_2022$H_complex), decreasing=TRUE))
 
 data_2022$H_N_complex <- paste0(data_2022$H_complex, "_", data_2022$N_complex)
-sort(table(data_2022$H_N_complex), decreasing=TRUE)
-sort(table(data_2022$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022)
-sort(table(data_2022$H_N_complex), decreasing=TRUE)[2]/nrow(data_2022)
-sort(table(data_2022$H_N_complex), decreasing=TRUE)[3]/nrow(data_2022)
+100*sort(table(data_2022$H_N_complex), decreasing=TRUE)
+100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022)
+100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[2]/nrow(data_2022)
+100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[3]/nrow(data_2022)
 
-#for section 3.2:
-length(table(data_nona$Constellation))
-length(table(data$H_N_complex))-(1+2+4+12) #using data, not data_nona, there are some bad ones. NA_NA, 2 end with "_ ", 4 start with " _",
-# 12 more end with "N2 "
+################
+#for section 3.2: 
+
+100-(100*(nrow(data_nona_TTTPPT)/nrow(data_nona))+
+     100*(nrow(data_nona_TTTTPT)/nrow(data_nona))+
+     100*(nrow(data_nona_TTPPPT)/nrow(data_nona)))
+
+length(table(data_nona$Constellation))-3
+length(table(data$H_N_complex))-1 #using data, not data_nona, there are some bad ones, NA_NA
+sort(table(data_nona$Constellation), decreasing=TRUE)
 
 length(table(data_nona_2022$Constellation))
-length(table(data_2022$H_N_complex))-1 #as we are using data, not data_nona, there are 11 cases of NA_NA, which we exclude from the count.
+length(table(data_2022$H_N_complex))-12 #as we are using data, not data_nona, 12 are NA_NA
 
 data_nona_2017plus <- data_nona[which(data_nona$Date_year == "2017" |
                                         data_nona$Date_year == "2018" |
@@ -1007,7 +1023,7 @@ data_2017plus <- data[which(data$Date_year == "2017" |
                               data$Date_year == "2020" |
                               data$Date_year == "2021" |
                               data$Date_year == "2022"),]
-nrow(data_nona_2017plus)
+nrow(data_nona_2017plus) #
 sort(table(data_nona_2017plus$Constellation), decreasing=TRUE)
 data_nona_2017plus_TTTPPT <- data_nona_2017plus[which(data_nona_2017plus$Constellation == "TTTPPT"),]
 nrow(data_nona_2017plus_TTTPPT);100*(nrow(data_nona_2017plus_TTTPPT)/nrow(data_nona_2017plus))
@@ -1018,9 +1034,19 @@ nrow(data_nona_2017plus_TTPPPT);100*(nrow(data_nona_2017plus_TTPPPT)/nrow(data_n
 head(sort(table(data_nona_2017plus_TTTPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2017plus_TTTPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2017plus_TTTPPT))
 head(sort(table(data_nona_2017plus_TTTTPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2017plus_TTTTPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2017plus_TTTTPT))
 head(sort(table(data_nona_2017plus_TTPPPT$Pairing), decreasing=TRUE), n=1);100*(sort(table(data_nona_2017plus_TTPPPT$Pairing), decreasing=TRUE)[[1]]/nrow(data_nona_2017plus_TTPPPT))
-length(table(data_nona_2017plus$Constellation))
-length(table(data_2017plus$H_N_complex))-(1+1+1+8) #using data, not data_nona, there are some bad ones. NA_NA, 1 ends with "_ ", 1 starts with " _",
-# 8 more end with "N2 "
+
+100-(100*(nrow(data_nona_2017plus_TTTPPT)/nrow(data_nona_2017plus))+
+     100*(nrow(data_nona_2017plus_TTTTPT)/nrow(data_nona_2017plus))+
+     100*(nrow(data_nona_2017plus_TTPPPT)/nrow(data_nona_2017plus)))
+length(table(data_nona_2017plus$Constellation))-3
+length(table(data_2017plus$H_N_complex))-1 #using data, not data_nona, there are some bad ones, NA_NA
+
+sort(table(data_nona_2022$Constellation), decreasing=TRUE)
+100-(100*(nrow(data_nona_2022_TTTPPT)/nrow(data_nona_2022))+
+       100*(nrow(data_nona_2022_TTTTPT)/nrow(data_nona_2022))+
+       100*(nrow(data_nona_2022_TVVPPT)/nrow(data_nona_2022)))
+length(table(data_nona_2022$Constellation))-3
+length(table(data_nona_2022$Pairing))
 
 ##############################
 ### Input file for microreact figure:
