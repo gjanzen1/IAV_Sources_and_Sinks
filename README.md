@@ -41,5 +41,5 @@ Garrett M. Janzen
 [@garrettjanzen](https://twitter.com/garrettjanzen)
 
 ## Acknowledgments
-Thanks to co-authors Blake T. Inderski, Jennifer Chang, Zebulun W. Arendsee, Alicia Janas-Martindale, Amy L. Baker, and Tavis K. Anderson, and to all members of the Flu-Crew at the National Animal Disease Center, USDA-ARS.
+Thanks to co-authors Blake T. Inderski, Jennifer Chang, Zebulun W. Arendsee, Alicia Janas-Martindale, Mia Torchetti, Amy L. Baker, Tavis K. Anderson, and to all members of the Flu-Crew at the National Animal Disease Center, USDA-ARS.
 
