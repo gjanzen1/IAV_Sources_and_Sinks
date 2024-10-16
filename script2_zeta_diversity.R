@@ -132,7 +132,7 @@ zeta.decline_2019 <- Zeta.decline.mc(onehot_2019_t[,-c(1:3)], onehot_2019_t[,2:3
 zeta.decline_2020 <- Zeta.decline.mc(onehot_2020_t[,-c(1:3)], onehot_2020_t[,2:3], orders = 1:nrow(onehot_2020_t), sam = 100, NON = TRUE)
 zeta.decline_2021 <- Zeta.decline.mc(onehot_2021_t[,-c(1:3)], onehot_2021_t[,2:3], orders = 1:nrow(onehot_2021_t), sam = 100, NON = TRUE)
 zeta.decline_2022 <- Zeta.decline.mc(onehot_2022_t[,-c(1:3)], onehot_2022_t[,2:3], orders = 1:nrow(onehot_2022_t), sam = 100, NON = TRUE)
-zeta.decline_full <- Zeta.decline.mc(onehot_full_t[,-c(1:3)], onehot_full_t[,2:3], orders = 1:nrow(onehot_full_t), sam = 100, NON = TRUE)
+zeta.decline_full <- Zeta.decline.mc(onehot_full_t[,-c(1:3)], onehot_full_t[,2:3], orders = 1:nrow(onehot_full_t), sam = 100, NON = TRUE) # Supplemental Figure S2
 
 Plot.zeta.decline(zeta.decline_2010)
 Plot.zeta.decline(zeta.decline_2011)
@@ -201,6 +201,21 @@ test <- cbind(
 colnames(test) <- c("order","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","full")
 test_melt <- melt(test)
 colnames(test_melt) <- c("Zeta_Order","Year","Zeta")
+
+zeta.decline_2010$aic #cannot say
+zeta.decline_2011$aic #exp
+zeta.decline_2012$aic #pl
+zeta.decline_2013$aic #exp
+zeta.decline_2014$aic #exp, weak
+zeta.decline_2015$aic #exp
+zeta.decline_2016$aic #exp
+zeta.decline_2017$aic #exp
+zeta.decline_2018$aic #exp
+zeta.decline_2019$aic #exp
+zeta.decline_2020$aic #exp
+zeta.decline_2021$aic #exp, weak
+zeta.decline_2022$aic #pl
+zeta.decline_full$aic #pl
 
 test_sd <- cbind(
   zeta.decline_2022$zeta.order, 
