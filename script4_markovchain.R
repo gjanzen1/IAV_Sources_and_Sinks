@@ -991,4 +991,316 @@ png("Plots/script4_map2_direction.png", height=720, width=1200)
 map2
 dev.off()
 
+###################
+### A better test of sink event prediction:
+### For a state string of length 2 or more, if you take one of the detection events from anywhere in the string except the final detection (which may be an XX),
+### What is th probability of the next state in the string being XX? Have the model guess whether it will be XX or not.
+### It may guess "XX" or "not XX".
+### Then, check how good the heuristics of always guessing "XX" or not XX" does. Compare to those.
+### I can do this for predicting XX in novel state strings or complete detection orders
+
+statestring_masterlist_xx <- list(statestringlist_xx_no1,             #no repeated states, minus strings with length of 1, XX included
+                               statestringlist_repeat_xx_no1)      #repeated states, minus strings with length of 1, XX included)
+descriptor_repeat <- c("no",
+                       "repeat")
+counter <- counter_guessXX <- counter_guessnotXX <- 0 #needs to be defined here, in case the first constellation tries to add 1 to counter. It is reset to 0 appropriately later in the script.
+counter_list_master <- counter_list_guessXX_master <- counter_list_guessnotXX_master <- list()
+trials_list_master <- list()
+
+i <- j <- k <- NULL
+seednum <- 1
+for(i in 1:length(statestring_masterlist_xx)){
+  # i <- 1
+  statestringlisti <- statestring_masterlist_xx[[i]]
+  tm_eval_list <- list()
+  statestring_test_list <- list()
+  #make the four evaluatory tms for statestring i:
+  for(j in 1:4){
+    # j <- 1
+    statestringlist_train <- statestringlisti[-seq(j, length(statestringlisti), 4)]
+    statestringlist_test <- statestringlisti[seq(j, length(statestringlisti), 4)]
+    m_eval <- do.call("rbind", lapply(statestringlist_train, function(x) cbind(head(x, -1), tail(x, -1))))
+    mc_eval <- markovchainFit(m_eval)
+    est_eval <- mc_eval$estimate
+    tm_eval <- est_eval@transitionMatrix
+    tm_melt_eval <- melt(tm_eval)
+    colnames(tm_melt_eval) <- c("Origin", "Destination", "Probability")
+    hmplot_eval <- ggplot(tm_melt_eval, aes(Destination, Origin, fill = Probability)) +
+      geom_tile(color = "black") +
+      scale_fill_gradient(low = "white", high = "orange") +
+      geom_tile() +
+      labs(title="Markov chain transition matrix");hmplot_eval
+    
+    tm_eval_list[[j]] <- tm_eval
+    statestring_test_list[[j]] <- statestringlist_test
+  }
+  #fix the evaluatory tms by making sure they contain the same states:
+  states_eval1 <- setdiff(union(colnames(as.data.frame(tm_eval_list[2])), union(colnames(as.data.frame(tm_eval_list[3])),
+                                                                                colnames(as.data.frame(tm_eval_list[4])))), colnames(as.data.frame(tm_eval_list[1]))) 
+  states_eval2 <- setdiff(union(colnames(as.data.frame(tm_eval_list[1])), union(colnames(as.data.frame(tm_eval_list[3])),
+                                                                                colnames(as.data.frame(tm_eval_list[4])))), colnames(as.data.frame(tm_eval_list[2])))
+  states_eval3 <- setdiff(union(colnames(as.data.frame(tm_eval_list[1])), union(colnames(as.data.frame(tm_eval_list[2])),
+                                                                                colnames(as.data.frame(tm_eval_list[4])))), colnames(as.data.frame(tm_eval_list[3])))
+  states_eval4 <- setdiff(union(colnames(as.data.frame(tm_eval_list[1])), union(colnames(as.data.frame(tm_eval_list[2])),
+                                                                                colnames(as.data.frame(tm_eval_list[3])))), colnames(as.data.frame(tm_eval_list[4])))
+  print(states_eval1);  print(states_eval2);  print(states_eval3);  print(states_eval4)
+  tm_eval1_df <- as.data.frame(tm_eval_list[[1]])
+  tm_eval2_df <- as.data.frame(tm_eval_list[[2]])
+  tm_eval3_df <- as.data.frame(tm_eval_list[[3]])
+  tm_eval4_df <- as.data.frame(tm_eval_list[[4]])
+  states_eval_list <- list(states_eval1, states_eval2, states_eval3, states_eval4)
+  tm_eval_list_df <- list(tm_eval1_df, tm_eval2_df, tm_eval3_df, tm_eval4_df)
+  j <- k <- NULL
+  for(j in 1:length(tm_eval_list_df)){                     #for each evaluatory tm,
+    # j <- 2
+    tmj <- tm_eval_list_df[[j]]                            #name the evaluatory tm j "tmj"
+    if(length(states_eval_list[[j]]) > 0){                 #if tmj is missing more than 0 states,
+      for(k in 1:length(states_eval_list[[j]])){           #for each missing state k,
+        # k <- 1
+        st <- states_eval_list[[j]][k]                     #define the state
+        tmj$newcol <- 0                                    #add new column
+        tmj <- rbind(tmj, 0)                               #add new row
+        colnames(tmj)[ncol(tmj)] <- st
+        rownames(tmj)[nrow(tmj)] <- st
+        st <- NULL
+      }
+      print(dim(tmj))
+      tm_eval_list_df[[j]] <- tmj                          #overwrite the element in the list with the fixed tmj object
+    }
+  }
+  print(dim(tm_eval_list_df[[1]]));print(dim(tm_eval_list_df[[2]]));print(dim(tm_eval_list_df[[3]]));print(dim(tm_eval_list_df[[4]]))
+  new_order <- sort(colnames(tm_eval_list_df[[1]]))
+  for(j in 1:4){
+    tm_eval_list_df[[j]] <- tm_eval_list_df[[j]][new_order, new_order]
+  }
+  #begin the testing:
+  j <- k <- NULL
+  counter_list <- list()                                                                            #start a list to store the counters
+  counter_list_guessXX <- list()                                                                    #start a list to store the counters
+  counter_list_guessnotXX <- list()                                                                 #start a list to store the counters
+  trials_list <- list()                                                                             #start a list to store the trials
+  for(j in 1:length(statestring_test_list)){                                                        #for each 1 of 4 eval/testing group pairs,
+    # j <- 1
+    tm_eval_colmeans <- colMeans(tm_eval_list_df[[j]])
+    for(k in 1:length(statestring_test_list[[j]])){                                                 #for each constellation in the test group,
+      # k <- 1
+      constellation <- names(statestring_test_list[[j]][k])                                         #pick the constellation,
+      constellation_statestring <- as.data.frame(unlist(statestring_test_list[[j]][k]))[,1]         #pull that constellation's state sequence,
+      rand <- sample(1:(length(constellation_statestring)-1), 1)
+      set.seed(seednum)
+      state_not_tail <- constellation_statestring[rand];state_not_tail                              #take a random state that isn't the final in the string,
+      state_next <- constellation_statestring[rand+1];state_next                                    #find the next state in the sequence
+      tm_eval_sub <- tm_eval_list_df[[j]][which(rownames(tm_eval_list_df[[j]])==state_not_tail),];tm_eval_sub    #tm_eval row of the prior state
+      if(descriptor_repeat[i] == "no"){                                                                                             #if we are disallowing repeats,
+        tm_eval_sub <- tm_eval_sub[names(tm_eval_sub) %!in% head(constellation_statestring, n=length(constellation_statestring)-1)] #the pool of possible next states cannot be in the constellation state string, minus the final state
+      }
+      state_final_predict <- colnames(tm_eval_sub)[which(tm_eval_sub == max(tm_eval_sub))];state_final_predict
+      if(length(state_final_predict) > 1){                                                                    #if it predicts 2+ tied states,
+        state_final_predict <- tm_eval_colmeans[state_final_predict]                                          #pull colmeans of tied states,
+        state_final_predict <- names(state_final_predict[state_final_predict == max(state_final_predict)])[1] #and pick the tied state with higher colmean. If still tied, pick the first one.
+      }
+      if(state_final_predict == state_next){
+        counter <- counter+1                                                                        #add to counter iff prediction matches actual
+      }
+      if("XX" == state_next){
+        counter_guessXX <- counter_guessXX+1                                                        #add to counter iff next state is XX
+      }
+      if("XX" != state_next){
+        counter_guessnotXX <- counter_guessnotXX+1                                                  #add to counter iff next state is not XX
+      }
+    }
+    counter_list <- append(counter_list,counter)
+    counter_list_guessXX <- append(counter_list_guessXX,counter_guessXX)
+    counter_list_guessnotXX <- append(counter_list_guessnotXX,counter_guessnotXX)
+    trials_list <- append(trials_list, k)
+    counter <- counter_guessXX <- counter_guessnotXX <- 0    
+  }
+  counter_list_master[[i]] <- unlist(counter_list)
+  counter_list_guessXX_master[[i]] <- unlist(counter_list_guessXX)
+  counter_list_guessnotXX_master[[i]] <- unlist(counter_list_guessnotXX)
+  trials_list_master[[i]] <- unlist(trials_list)
+}
+
+accuracy_xx <- sum(counter_list_master[[1]])/sum(trials_list_master[[1]]);accuracy_xx                        #predict next state in string, barring repeats, permitting XX
+accuracy_xx_repeat <- sum(counter_list_master[[2]])/sum(trials_list_master[[2]]);accuracy_xx_repeat          #predict next state in string, permitting repeats, permitting XX
+
+#Sink Event Scenarios
+accuracy_guessxx <- sum(counter_list_guessXX_master[[1]])/sum(trials_list_master[[1]]);accuracy_guessxx                 #predict next state will be XX, barring repeats; likelihood that it will not move to another state
+accuracy_guessxx_repeat <- sum(counter_list_guessXX_master[[2]])/sum(trials_list_master[[2]]);accuracy_guessxx_repeat   #predict next state will be XX, permitting repeats; likelihood that it'll never be detected again
+
+#Perpetuation Scenarios
+accuracy_guessnotxx <- sum(counter_list_guessnotXX_master[[1]])/sum(trials_list_master[[1]]);accuracy_guessnotxx                  #predict next state won't be XX, barring repeats; likelihood that it will move to another state
+accuracy_guessnotxx_repeat <- sum(counter_list_guessnotXX_master[[2]])/sum(trials_list_master[[2]]);accuracy_guessnotxx_repeat    #predict next state won't be XX, permitting repeats; likelihood that it will be seen again
+
+length(statestringlist_repeat[sapply(statestringlist_repeat, function(lst)length(lst) == 1)])/length(statestringlist_repeat)                                     #what fraction of viruses have only been detected once?
+length(statestringlist_repeat_xx[sapply(statestringlist_repeat_xx, function(lst)length(lst) == 2 && tail(lst, 1) == "XX")])/length(statestringlist_repeat_xx)    #what fraction of viruses are only ever detected once, then go extinct?
+length(statestringlist_repeat_xx[sapply(statestringlist_repeat_xx, function(lst)length(lst) == 2 && tail(lst, 1) == "XX")])/length(statestringlist_repeat_xx)/
+  length(statestringlist_repeat[sapply(statestringlist_repeat, function(lst)length(lst) == 1)])/length(statestringlist_repeat)                                   #what fraction of single-detection viruses are we confident are extinct?
+length(statestringlist_repeat_xx[sapply(statestringlist_repeat_xx, function(lst)length(lst) > 2 && tail(lst, 1) == "XX")])/length(statestringlist_repeat_xx)     #what fraction of viruses are only ever detected once, then go extinct?
+length(statestringlist_repeat_xx[sapply(statestringlist_repeat_xx, function(lst) tail(lst, 1) == "XX")])/length(statestringlist_repeat_xx)                       #what fraction of viruses went extinct at some point?
+
+
+
+
+
+
+
+
+
+
+
+
+###################
+### An even better test of sink event prediction:
+### For a state string of length 2 or more, NOT COUNTING XX, if you take one of the detection events from anywhere in the string except the final detection (which may be an XX),
+### What is th probability of the next state in the string being XX? Have the model guess whether it will be XX or not.
+### It may guess "XX" or "not XX".
+### Then, check how good the heuristics of always guessing "XX" or not XX" does. Compare to those.
+### I can do this for predicting XX in novel state strings or complete detection orders
+
+statestringlist_xx_no1_v2 <- Filter(function(x) !(length(x) < 2 || (length(x) == 2 && tail(x, 1) == "XX")), statestringlist_xx_no1);length(statestringlist_xx_no1_v2)
+statestringlist_repeat_xx_no1_v2 <- Filter(function(x) !(length(x) < 2 || (length(x) == 2 && tail(x, 1) == "XX")), statestringlist_repeat_xx_no1);length(statestringlist_repeat_xx_no1_v2)
+
+statestring_masterlist_xx <- list(statestringlist_xx_no1_v2,             #no repeated states, minus strings with length of 1 or a length of 2 with XX
+                                  statestringlist_repeat_xx_no1_v2)      #repeated states, minus strings with length of 1 or a length of 2 with XX
+descriptor_repeat <- c("no",
+                       "repeat")
+counter <- counter_guessXX <- counter_guessnotXX <- 0 #needs to be defined here, in case the first constellation tries to add 1 to counter. It is reset to 0 appropriately later in the script.
+counter_list_master <- counter_list_guessXX_master <- counter_list_guessnotXX_master <- list()
+trials_list_master <- list()
+
+i <- j <- k <- NULL
+for(i in 1:length(statestring_masterlist_xx)){
+  # i <- 1
+  statestringlisti <- statestring_masterlist_xx[[i]]
+  tm_eval_list <- list()
+  statestring_test_list <- list()
+  #make the four evaluatory tms for statestring i:
+  for(j in 1:4){
+    # j <- 1
+    statestringlist_train <- statestringlisti[-seq(j, length(statestringlisti), 4)]
+    statestringlist_test <- statestringlisti[seq(j, length(statestringlisti), 4)]
+    m_eval <- do.call("rbind", lapply(statestringlist_train, function(x) cbind(head(x, -1), tail(x, -1))))
+    mc_eval <- markovchainFit(m_eval)
+    est_eval <- mc_eval$estimate
+    tm_eval <- est_eval@transitionMatrix
+    tm_melt_eval <- melt(tm_eval)
+    colnames(tm_melt_eval) <- c("Origin", "Destination", "Probability")
+    hmplot_eval <- ggplot(tm_melt_eval, aes(Destination, Origin, fill = Probability)) +
+      geom_tile(color = "black") +
+      scale_fill_gradient(low = "white", high = "orange") +
+      geom_tile() +
+      labs(title="Markov chain transition matrix");hmplot_eval
+    
+    tm_eval_list[[j]] <- tm_eval
+    statestring_test_list[[j]] <- statestringlist_test
+  }
+  #fix the evaluatory tms by making sure they contain the same states:
+  states_eval1 <- setdiff(union(colnames(as.data.frame(tm_eval_list[2])), union(colnames(as.data.frame(tm_eval_list[3])),
+                                                                                colnames(as.data.frame(tm_eval_list[4])))), colnames(as.data.frame(tm_eval_list[1]))) 
+  states_eval2 <- setdiff(union(colnames(as.data.frame(tm_eval_list[1])), union(colnames(as.data.frame(tm_eval_list[3])),
+                                                                                colnames(as.data.frame(tm_eval_list[4])))), colnames(as.data.frame(tm_eval_list[2])))
+  states_eval3 <- setdiff(union(colnames(as.data.frame(tm_eval_list[1])), union(colnames(as.data.frame(tm_eval_list[2])),
+                                                                                colnames(as.data.frame(tm_eval_list[4])))), colnames(as.data.frame(tm_eval_list[3])))
+  states_eval4 <- setdiff(union(colnames(as.data.frame(tm_eval_list[1])), union(colnames(as.data.frame(tm_eval_list[2])),
+                                                                                colnames(as.data.frame(tm_eval_list[3])))), colnames(as.data.frame(tm_eval_list[4])))
+  print(states_eval1);  print(states_eval2);  print(states_eval3);  print(states_eval4)
+  tm_eval1_df <- as.data.frame(tm_eval_list[[1]])
+  tm_eval2_df <- as.data.frame(tm_eval_list[[2]])
+  tm_eval3_df <- as.data.frame(tm_eval_list[[3]])
+  tm_eval4_df <- as.data.frame(tm_eval_list[[4]])
+  states_eval_list <- list(states_eval1, states_eval2, states_eval3, states_eval4)
+  tm_eval_list_df <- list(tm_eval1_df, tm_eval2_df, tm_eval3_df, tm_eval4_df)
+  j <- k <- NULL
+  for(j in 1:length(tm_eval_list_df)){                     #for each evaluatory tm,
+    # j <- 2
+    tmj <- tm_eval_list_df[[j]]                            #name the evaluatory tm j "tmj"
+    if(length(states_eval_list[[j]]) > 0){                 #if tmj is missing more than 0 states,
+      for(k in 1:length(states_eval_list[[j]])){           #for each missing state k,
+        # k <- 1
+        st <- states_eval_list[[j]][k]                     #define the state
+        tmj$newcol <- 0                                    #add new column
+        tmj <- rbind(tmj, 0)                               #add new row
+        colnames(tmj)[ncol(tmj)] <- st
+        rownames(tmj)[nrow(tmj)] <- st
+        st <- NULL
+      }
+      print(dim(tmj))
+      tm_eval_list_df[[j]] <- tmj                          #overwrite the element in the list with the fixed tmj object
+    }
+  }
+  print(dim(tm_eval_list_df[[1]]));print(dim(tm_eval_list_df[[2]]));print(dim(tm_eval_list_df[[3]]));print(dim(tm_eval_list_df[[4]]))
+  new_order <- sort(colnames(tm_eval_list_df[[1]]))
+  for(j in 1:4){
+    tm_eval_list_df[[j]] <- tm_eval_list_df[[j]][new_order, new_order]
+  }
+  #begin the testing:
+  j <- k <- NULL
+  counter_list <- list()                                                                            #start a list to store the counters
+  counter_list_guessXX <- list()                                                                    #start a list to store the counters
+  counter_list_guessnotXX <- list()                                                                 #start a list to store the counters
+  trials_list <- list()                                                                             #start a list to store the trials
+  for(j in 1:length(statestring_test_list)){                                                        #for each 1 of 4 eval/testing group pairs,
+    # j <- 1
+    tm_eval_colmeans <- colMeans(tm_eval_list_df[[j]])
+    for(k in 1:length(statestring_test_list[[j]])){                                                 #for each constellation in the test group,
+      # k <- 1
+      constellation <- names(statestring_test_list[[j]][k])                                         #pick the constellation,
+      constellation_statestring <- as.data.frame(unlist(statestring_test_list[[j]][k]))[,1]         #pull that constellation's state sequence,
+      rand <- sample(1:(length(constellation_statestring)-1), 1)
+      state_not_tail <- constellation_statestring[rand];state_not_tail                              #take a random state that isn't the final in the string,
+      state_next <- constellation_statestring[rand+1];state_next                                    #find the next state in the sequence
+      tm_eval_sub <- tm_eval_list_df[[j]][which(rownames(tm_eval_list_df[[j]])==state_not_tail),];tm_eval_sub    #tm_eval row of the prior state
+      if(descriptor_repeat[i] == "no"){                                                                                             #if we are disallowing repeats,
+        tm_eval_sub <- tm_eval_sub[names(tm_eval_sub) %!in% head(constellation_statestring, n=length(constellation_statestring)-1)] #the pool of possible next states cannot be in the constellation state string, minus the final state
+      }
+      state_final_predict <- colnames(tm_eval_sub)[which(tm_eval_sub == max(tm_eval_sub))];state_final_predict
+      if(length(state_final_predict) > 1){                                                                    #if it predicts 2+ tied states,
+        state_final_predict <- tm_eval_colmeans[state_final_predict]                                          #pull colmeans of tied states,
+        state_final_predict <- names(state_final_predict[state_final_predict == max(state_final_predict)])[1] #and pick the tied state with higher colmean. If still tied, pick the first one.
+      }
+      if(state_final_predict == state_next){
+        counter <- counter+1                                                                        #add to counter iff prediction matches actual
+      }
+      if("XX" == state_next){
+        counter_guessXX <- counter_guessXX+1                                                        #add to counter iff next state is XX
+      }
+      if("XX" != state_next){
+        counter_guessnotXX <- counter_guessnotXX+1                                                  #add to counter iff next state is not XX
+      }
+    }
+    counter_list <- append(counter_list,counter)
+    counter_list_guessXX <- append(counter_list_guessXX,counter_guessXX)
+    counter_list_guessnotXX <- append(counter_list_guessnotXX,counter_guessnotXX)
+    trials_list <- append(trials_list, k)
+    counter <- counter_guessXX <- counter_guessnotXX <- 0    
+  }
+  counter_list_master[[i]] <- unlist(counter_list)
+  counter_list_guessXX_master[[i]] <- unlist(counter_list_guessXX)
+  counter_list_guessnotXX_master[[i]] <- unlist(counter_list_guessnotXX)
+  trials_list_master[[i]] <- unlist(trials_list)
+}
+
+accuracy_xx_v2 <- sum(counter_list_master[[1]])/sum(trials_list_master[[1]]);accuracy_xx_v2                        #predict next state in string, barring repeats, permitting XX
+accuracy_xx_repeat_v2 <- sum(counter_list_master[[2]])/sum(trials_list_master[[2]]);accuracy_xx_repeat_v2          #predict next state in string, permitting repeats, permitting XX
+
+#Sink Event Scenarios
+accuracy_guessxx_v2 <- sum(counter_list_guessXX_master[[1]])/sum(trials_list_master[[1]]);accuracy_guessxx_v2                 #predict next state will be XX, barring repeats; likelihood that it will not move to another state
+accuracy_guessxx_repeat_v2 <- sum(counter_list_guessXX_master[[2]])/sum(trials_list_master[[2]]);accuracy_guessxx_repeat_v2   #predict next state will be XX, permitting repeats; likelihood that it'll never be detected again
+
+#Perpetuation Scenarios
+accuracy_guessnotxx_v2 <- sum(counter_list_guessnotXX_master[[1]])/sum(trials_list_master[[1]]);accuracy_guessnotxx_v2                  #predict next state won't be XX, barring repeats; likelihood that it will move to another state
+accuracy_guessnotxx_repeat_v2 <- sum(counter_list_guessnotXX_master[[2]])/sum(trials_list_master[[2]]);accuracy_guessnotxx_repeat_v2    #predict next state won't be XX, permitting repeats; likelihood that it will be seen again
+
+#Compare accuracy_xx to accuracy_guessxx: 9.9% increase in prediction accuracy when you don't just assume it will not spread to another state.
+accuracy_xx_v2-accuracy_guessxx_v2
+#Compare accuracy_xx_repeat to accuracy_guessxx_repeat: 9.1% increase in prediction accuracy when you don't just assume it will not be detected again.
+accuracy_xx_repeat_v2-accuracy_guessxx_repeat_v2
+
+
+
+
+
+
+
 
