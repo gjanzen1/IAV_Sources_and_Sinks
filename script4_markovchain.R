@@ -65,7 +65,7 @@ for(i in 1:length(statestringlist_xx)){
   xxstring <- NULL
   
   dat <- dat[which(!duplicated(dat$State)),];dim(dat)
-  xxstring <- ifelse(max(dat$Date) > data_dmax-window, list(c(statestringlist_xx[[i]], "XX")), list(c(statestringlist_xx[[i]])))
+  xxstring <- ifelse(max(dat$Date) < data_dmax-window, list(c(statestringlist_xx[[i]], "XX")), list(c(statestringlist_xx[[i]]))) ### GGG < or > ?
   statestringlist_xx[[i]] <- unlist(xxstring)
   xxstring <- NULL
 }
@@ -1086,8 +1086,8 @@ for(i in 1:length(statestring_masterlist_xx)){
       # k <- 1
       constellation <- names(statestring_test_list[[j]][k])                                         #pick the constellation,
       constellation_statestring <- as.data.frame(unlist(statestring_test_list[[j]][k]))[,1]         #pull that constellation's state sequence,
-      rand <- sample(1:(length(constellation_statestring)-1), 1)
       set.seed(seednum)
+      rand <- sample(1:(length(constellation_statestring)-1), 1)
       state_not_tail <- constellation_statestring[rand];state_not_tail                              #take a random state that isn't the final in the string,
       state_next <- constellation_statestring[rand+1];state_next                                    #find the next state in the sequence
       tm_eval_sub <- tm_eval_list_df[[j]][which(rownames(tm_eval_list_df[[j]])==state_not_tail),];tm_eval_sub    #tm_eval row of the prior state
@@ -1099,9 +1099,27 @@ for(i in 1:length(statestring_masterlist_xx)){
         state_final_predict <- tm_eval_colmeans[state_final_predict]                                          #pull colmeans of tied states,
         state_final_predict <- names(state_final_predict[state_final_predict == max(state_final_predict)])[1] #and pick the tied state with higher colmean. If still tied, pick the first one.
       }
-      if(state_final_predict == state_next){
-        counter <- counter+1                                                                        #add to counter iff prediction matches actual
+
+      
+      mcguess <- "notXX"                                                                            # default, guess not XX
+      if(state_final_predict == "XX"){                                                              # if the markov chain model predicts XX,
+        mcguess <- "XX"                                                                             # update mcguess to XX
       }
+      
+      
+      if(mcguess == "XX"){                                                                          # if mcguess is XX,
+        if(state_next == "XX"){                                                                     # and the next state is indeed XX,
+          counter <- counter+1                                                                      # add to counter
+          print("BINGO!")
+        }
+      }
+      if(mcguess == "notXX"){                                                                       # if mcguess is notXX,
+        if(state_next != "XX"){                                                                     # and the next state is indeed notXX,
+          counter <- counter+1                                                                      # add to counter
+        }
+      }
+      
+      
       if("XX" == state_next){
         counter_guessXX <- counter_guessXX+1                                                        #add to counter iff next state is XX
       }
@@ -1170,6 +1188,7 @@ counter_list_master <- counter_list_guessXX_master <- counter_list_guessnotXX_ma
 trials_list_master <- list()
 
 i <- j <- k <- NULL
+seednum <- 0
 for(i in 1:length(statestring_masterlist_xx)){
   # i <- 1
   statestringlisti <- statestring_masterlist_xx[[i]]
@@ -1247,6 +1266,7 @@ for(i in 1:length(statestring_masterlist_xx)){
       # k <- 1
       constellation <- names(statestring_test_list[[j]][k])                                         #pick the constellation,
       constellation_statestring <- as.data.frame(unlist(statestring_test_list[[j]][k]))[,1]         #pull that constellation's state sequence,
+      set.seed(seednum)
       rand <- sample(1:(length(constellation_statestring)-1), 1)
       state_not_tail <- constellation_statestring[rand];state_not_tail                              #take a random state that isn't the final in the string,
       state_next <- constellation_statestring[rand+1];state_next                                    #find the next state in the sequence
@@ -1259,9 +1279,23 @@ for(i in 1:length(statestring_masterlist_xx)){
         state_final_predict <- tm_eval_colmeans[state_final_predict]                                          #pull colmeans of tied states,
         state_final_predict <- names(state_final_predict[state_final_predict == max(state_final_predict)])[1] #and pick the tied state with higher colmean. If still tied, pick the first one.
       }
-      if(state_final_predict == state_next){
-        counter <- counter+1                                                                        #add to counter iff prediction matches actual
+      
+      mcguess <- "notXX"                                                                            # default, guess not XX
+      if(state_final_predict == "XX"){                                                              # if the markov chain model predicts XX,
+        mcguess <- "XX"                                                                             # update mcguess to XX
       }
+      
+      if(mcguess == "XX"){                                                                          # if mcguess is XX,
+        if(state_next == "XX"){                                                                     # and the next state is indeed XX,
+          counter <- counter+1                                                                      # add to counter
+        }
+      }
+      if(mcguess == "notXX"){                                                                       # if mcguess is notXX,
+        if(state_next != "XX"){                                                                     # and the next state is indeed notXX,
+          counter <- counter+1                                                                      # add to counter
+        }
+      }
+      
       if("XX" == state_next){
         counter_guessXX <- counter_guessXX+1                                                        #add to counter iff next state is XX
       }
