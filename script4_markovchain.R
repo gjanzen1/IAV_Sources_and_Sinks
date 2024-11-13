@@ -825,8 +825,6 @@ for(i in 1:length(statestring_masterlist)){
     }
   }
   
-  print(dim(tm_eval_list_df[[1]]));print(dim(tm_eval_list_df[[2]]));print(dim(tm_eval_list_df[[3]]));print(dim(tm_eval_list_df[[4]]))
-  
   new_order <- sort(colnames(tm_eval_list_df[[1]]))
   for(j in 1:4){
     tm_eval_list_df[[j]] <- tm_eval_list_df[[j]][new_order, new_order]
@@ -876,11 +874,11 @@ for(i in 1:length(statestring_masterlist)){
 }
 
 accuracy <- sum(counter_list_master[[1]])/sum(trials_list_master[[1]]);accuracy                              #predict final state in string, barring repeats, barring XX
-accuracy_xx <- sum(counter_list_master[[3]])/sum(trials_list_master[[3]]);accuracy_xx                        #predict final state in string, barring repeats, permitting XX
+# accuracy_xx <- sum(counter_list_master[[3]])/sum(trials_list_master[[3]]);accuracy_xx                        #predict final state in string, barring repeats, permitting XX
 accuracy_subset <- sum(counter_list_master[[5]])/sum(trials_list_master[[5]]);accuracy_subset                #predict final state in string, given top 10 swine states, barring repeats, barring XX
 
 accuracy_repeat <- sum(counter_list_master[[2]])/sum(trials_list_master[[2]]);accuracy_repeat                #predict final state in string, permitting repeats, barring XX
-accuracy_xx_repeat <- sum(counter_list_master[[4]])/sum(trials_list_master[[4]]);accuracy_xx_repeat          #predict final state in string, permitting repeats, permitting XX
+# accuracy_xx_repeat <- sum(counter_list_master[[4]])/sum(trials_list_master[[4]]);accuracy_xx_repeat          #predict final state in string, permitting repeats, permitting XX
 accuracy_subset_repeat <- sum(counter_list_master[[6]])/sum(trials_list_master[[6]]);accuracy_subset_repeat  #predict final state in string, given top 10 swine states, permitting repeats, barring XX
 
 #####################################################
@@ -923,6 +921,8 @@ descriptor_test <- c("test1",
 counter <- counter_guessXX <- counter_guessnotXX <- 0
 counter_list_master <- counter_list_guessXX_master <- counter_list_guessnotXX_master <- trials_list_master <- list()
 i <- j <- k <- NULL
+
+set.seed(10);random_numbers <- sample(0:100, size = 1000, replace = TRUE)
 
 for(i in 1:length(statestring_masterlist_xx)){
   # i <- 4
@@ -979,7 +979,6 @@ for(i in 1:length(statestring_masterlist_xx)){
         rownames(tmj)[nrow(tmj)] <- st
         st <- NULL
       }
-      # print(dim(tmj))
       tm_eval_list_df[[j]] <- tmj                          #overwrite the element in the list with the fixed tmj object
     }
   }
@@ -1001,7 +1000,7 @@ for(i in 1:length(statestring_masterlist_xx)){
       # k <- 1
       constellation <- names(statestring_test_list[[j]][k])                                         #pick the constellation,
       constellation_statestring <- as.data.frame(unlist(statestring_test_list[[j]][k]))[,1]         #pull that constellation's state sequence,
-      rand <- sample(1:(length(constellation_statestring)-1), 1)                                    #pick a random number 1:(length of string-1)
+      set.seed(random_numbers[k]);rand <- sample(1:(length(constellation_statestring)-1), 1)        #pick a random number 1:(length of string-1)
 
       switch(descriptor_test[i],
              "test1" = {
@@ -1091,10 +1090,10 @@ accuracy_guessxx_test2_repeat <- sum(counter_list_guessXX_master[[4]])/sum(trial
 accuracy_guessnotxx_test2_repeat <- sum(counter_list_guessnotXX_master[[4]])/sum(trials_list_master[[4]]);accuracy_guessnotxx_test2_repeat   #guessing it will not go extinct
 
 ################
-
-accuracy_test3  <- sum(counter_list_master[[5]])/sum(trials_list_master[[5]]);accuracy_test3                                    #predict whether virus with unknown history will spread to a new state
-accuracy_guessxx_test3  <- sum(counter_list_guessXX_master[[5]] )/sum(trials_list_master[[5]]);accuracy_guessxx_test3           #guessing it will not spread to a new state
-accuracy_guessnotxx_test3  <- sum(counter_list_guessnotXX_master[[5]] )/sum(trials_list_master[[5]]);accuracy_guessnotxx_test3  #guessing it will spread to a new state
+s
+# accuracy_test3  <- sum(counter_list_master[[5]])/sum(trials_list_master[[5]]);accuracy_test3                                    #predict whether virus with unknown history will spread to a new state
+# accuracy_guessxx_test3  <- sum(counter_list_guessXX_master[[5]] )/sum(trials_list_master[[5]]);accuracy_guessxx_test3           #guessing it will not spread to a new state
+# accuracy_guessnotxx_test3  <- sum(counter_list_guessnotXX_master[[5]] )/sum(trials_list_master[[5]]);accuracy_guessnotxx_test3  #guessing it will spread to a new state
 
 accuracy_test3_repeat <- sum(counter_list_master[[6]])/sum(trials_list_master[[6]] );accuracy_test3_repeat                                   #predict whether virus with unknown history will go extinct
 accuracy_guessxx_test3_repeat <- sum(counter_list_guessXX_master[[6]])/sum(trials_list_master[[6]]);accuracy_guessxx_test3_repeat            #guessing it will go extinct
@@ -1235,3 +1234,10 @@ dev.off()
 png("Plots/script4_map2_direction.png", height=720, width=1200)
 map2
 dev.off()
+
+
+
+
+
+
+
