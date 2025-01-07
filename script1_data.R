@@ -978,6 +978,7 @@ sort(table(data$Subtype), decreasing=TRUE)
 sort(table(data$Subtype), decreasing=TRUE)[1]/nrow(data)
 sort(table(data$Subtype), decreasing=TRUE)[2]/nrow(data)
 sort(table(data$Subtype), decreasing=TRUE)[3]/nrow(data)
+sort(table(data$Subtype), decreasing=TRUE)[5]/nrow(data)
 
 data$H_N_complex <- paste0(data$H_complex, "_", data$N_complex)
 sort(table(data$H_N_complex), decreasing=TRUE)[1:10]
@@ -986,16 +987,40 @@ sort(table(data$H_N_complex), decreasing=TRUE)[1:10]
 100*sort(table(data$H_N_complex), decreasing=TRUE)[3]/nrow(data)
 100*sum(sort(table(data$H_N_complex), decreasing=TRUE)[1:3])/nrow(data)
 
+sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H1N1"),])
+sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H1N2"),])
+sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H3N2"),])
+sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H3N1"),])
+
 data_2022 <- data[which(data$Date_year == "2022"),]
 sort(table(data_2022$H_complex), decreasing=TRUE)
 100*sum(sort(table(data_2022$H_complex), decreasing=TRUE)[1:3])/nrow(data_2022)
-length(sort(table(data_2022$H_complex), decreasing=TRUE))
+length(sort(table(data_2022$H_complex), decreasing=TRUE))-3
 
 data_2022$H_N_complex <- paste0(data_2022$H_complex, "_", data_2022$N_complex)
-100*sort(table(data_2022$H_N_complex), decreasing=TRUE)
+sort(table(data_2022$H_N_complex), decreasing=TRUE)
 100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022)
 100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[2]/nrow(data_2022)
 100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[3]/nrow(data_2022)
+
+sort(table(data_2022$Subtype), decreasing=TRUE)
+sort(table(data_2022$Subtype), decreasing=TRUE)[1]/nrow(data_2022)
+sort(table(data_2022$Subtype), decreasing=TRUE)[2]/nrow(data_2022)
+sort(table(data_2022$Subtype), decreasing=TRUE)[3]/nrow(data_2022)
+sort(table(data_2022$Subtype), decreasing=TRUE)[5]/nrow(data_2022)
+
+sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H1N1"),])
+sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H1N2"),])
+sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H3N2"),])
+sort(table(data_2022[which(data_2022$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data_2022[which(data_2022$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H3N1"),])
 
 ################
 #for section 3.2: 
@@ -1005,7 +1030,8 @@ data_2022$H_N_complex <- paste0(data_2022$H_complex, "_", data_2022$N_complex)
      100*(nrow(data_nona_TTPPPT)/nrow(data_nona)))
 
 length(table(data_nona$Constellation))-3
-length(table(data$H_N_complex))-1 #using data, not data_nona, there are some bad ones, NA_NA
+length(table(data$H_N_complex))-1 #using data, there are some bad ones, NA_NA, -
+
 sort(table(data_nona$Constellation), decreasing=TRUE)
 
 length(table(data_nona_2022$Constellation))
@@ -1039,7 +1065,7 @@ head(sort(table(data_nona_2017plus_TTPPPT$Pairing), decreasing=TRUE), n=1);100*(
      100*(nrow(data_nona_2017plus_TTTTPT)/nrow(data_nona_2017plus))+
      100*(nrow(data_nona_2017plus_TTPPPT)/nrow(data_nona_2017plus)))
 length(table(data_nona_2017plus$Constellation))-3
-length(table(data_2017plus$H_N_complex))-1 #using data, not data_nona, there are some bad ones, NA_NA
+length(table(data_2017plus$H_N_complex))-1 #using data, there are some bad ones, NA_NA, -
 
 sort(table(data_nona_2022$Constellation), decreasing=TRUE)
 100-(100*(nrow(data_nona_2022_TTTPPT)/nrow(data_nona_2022))+
@@ -1080,7 +1106,6 @@ data_5y_sort <- data_5y_sort[which(data_5y_sort$Ha_clade != "1A.2-3-like" &
 
 data_5ym <- merge(data_5y_sort, colors, by.x="Ha_clade", by.y="clade", all.x=TRUE)
 table(data_5ym$Ha_clade);any(is.na(data_5ym$Ha_clade))
-plot(data_5y_sort$Date)
 
 colnames(data_5ym) <- c("Clade","Date","State","Longitude","Latitude","Clade__color")
 write.csv(data_5ym, "microreact_input_5y.csv", row.names=FALSE)
