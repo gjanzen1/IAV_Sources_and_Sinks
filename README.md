@@ -1,6 +1,6 @@
 # IAV_Sources_and_Sinks
 
-Data and R code used to run analyses for the manuscript "Sources and sinks of influenza A virus genome diversity in swine in the USA from 2009 to 2022". This manuscript is in prep.
+Data and R code used to run analyses for the manuscript "Sources and sinks of influenza A virus genomic diversity in swine from 2009 to 2022 in the United States". This manuscript is in prep.
 
 ## Description
 
