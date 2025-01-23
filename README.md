@@ -51,7 +51,6 @@ Alicia Janas-Martindale
 Mia Kim Torchetti
 
 Amy L. Baker
-
 Tavis K. Anderson
 
 ## Acknowledgments
