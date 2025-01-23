@@ -206,16 +206,16 @@ zeta.decline_2010$aic #cannot say
 zeta.decline_2011$aic #exp
 zeta.decline_2012$aic #pl
 zeta.decline_2013$aic #exp
-zeta.decline_2014$aic #exp, weak
-zeta.decline_2015$aic #exp
+zeta.decline_2014$aic #pl
+zeta.decline_2015$aic #exp, weak
 zeta.decline_2016$aic #exp
 zeta.decline_2017$aic #exp
 zeta.decline_2018$aic #exp
 zeta.decline_2019$aic #exp
 zeta.decline_2020$aic #exp
-zeta.decline_2021$aic #exp, weak
+zeta.decline_2021$aic #exp
 zeta.decline_2022$aic #pl
-zeta.decline_full$aic #pl
+zeta.decline_full$aic #exp
 
 test_sd <- cbind(
   zeta.decline_2022$zeta.order, 
@@ -389,3 +389,6 @@ png("Plots/script2_zeta_auc.png", width=650, height=550)
 plot5
 dev.off()
 
+##############################
+##############################
+##############################
