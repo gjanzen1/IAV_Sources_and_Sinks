@@ -40,7 +40,7 @@ library("geodist")
 library("pscl")
 library("randomForest")
 library("Metrics")
-library("reprtree")
+# library("reprtree")
 library("gbm")
 library("minerva")
 library("emmeans")
@@ -971,7 +971,7 @@ head(sort(table(data_nona_H3N2$Pairing), decreasing=TRUE), n=1);100*(sort(table(
 head(sort(table(data_nona$Constellation), decreasing=TRUE), n=3);100*(sum(sort(table(data_nona$Constellation), decreasing=TRUE)[1:3])/nrow(data_nona))
 
 ################
-#for section 3.1:
+#for section 3.1 and Table 1:
 
 nrow(data)
 sort(table(data$Subtype), decreasing=TRUE)
@@ -1007,20 +1007,297 @@ sort(table(data_2022$H_N_complex), decreasing=TRUE)
 100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[2]/nrow(data_2022)
 100*sort(table(data_2022$H_N_complex), decreasing=TRUE)[3]/nrow(data_2022)
 
-sort(table(data_2022$Subtype), decreasing=TRUE)
-sort(table(data_2022$Subtype), decreasing=TRUE)[1]/nrow(data_2022)
-sort(table(data_2022$Subtype), decreasing=TRUE)[2]/nrow(data_2022)
-sort(table(data_2022$Subtype), decreasing=TRUE)[3]/nrow(data_2022)
-sort(table(data_2022$Subtype), decreasing=TRUE)[5]/nrow(data_2022)
+##############################
+##############################
+### Table 1:
+### Starting with 2022:
 
-sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)
-100*sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H1N1"),])
-sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)
-100*sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H1N2"),])
+sort(table(data_2022$Subtype), decreasing=TRUE)
+100*sort(table(data_2022$Subtype), decreasing=TRUE)[1]/nrow(data_2022)
+100*sort(table(data_2022$Subtype), decreasing=TRUE)[2]/nrow(data_2022)
+100*sort(table(data_2022$Subtype), decreasing=TRUE)[3]/nrow(data_2022)
+
+### H3N2
 sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)
 100*sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H3N2"),])
-sort(table(data_2022[which(data_2022$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)
-100*sort(table(data_2022[which(data_2022$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H3N1"),])
+100*sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[2]/nrow(data_2022[which(data_2022$Subtype=="H3N2"),])
+100*sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[3]/nrow(data_2022[which(data_2022$Subtype=="H3N2"),])
+
+#The first Ha/NA pairing:
+i <- 1
+name_temp <- names(sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data_2022[which(data_2022$Subtype=="H3N2" & data_2022$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #2 constellations captures most of it.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+
+#The second Ha/NA pairing:
+i <- 2
+name_temp <- names(sort(table(data_2022[which(data_2022$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data_2022[which(data_2022$Subtype=="H3N2" & data_2022$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #1 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+
+### H1N1
+sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H1N1"),])
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[2]/nrow(data_2022[which(data_2022$Subtype=="H1N1"),])
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[3]/nrow(data_2022[which(data_2022$Subtype=="H1N1"),])
+
+#The first Ha/NA pairing:
+i <- 1
+name_temp <- names(sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data_2022[which(data_2022$Subtype=="H1N1" & data_2022$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #1 constellation does it
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+
+#The second Ha/NA pairing:
+i <- 2
+name_temp <- names(sort(table(data_2022[which(data_2022$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data_2022[which(data_2022$Subtype=="H1N1" & data_2022$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #1 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+
+### H1N2
+sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data_2022[which(data_2022$Subtype=="H1N2"),])
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[2]/nrow(data_2022[which(data_2022$Subtype=="H1N2"),])
+100*sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[3]/nrow(data_2022[which(data_2022$Subtype=="H1N2"),])
+
+#The first Ha/NA pairing:
+i <- 1
+name_temp <- names(sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data_2022[which(data_2022$Subtype=="H1N2" & data_2022$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #1 constellation does it
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+
+#The second Ha/NA pairing:
+i <- 2
+name_temp <- names(sort(table(data_2022[which(data_2022$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data_2022[which(data_2022$Subtype=="H1N2" & data_2022$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #3 constellations is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Ending with the full dataset:
+
+sort(table(data$Subtype), decreasing=TRUE)
+100*sort(table(data$Subtype), decreasing=TRUE)[1]/nrow(data)
+100*sort(table(data$Subtype), decreasing=TRUE)[2]/nrow(data)
+100*sort(table(data$Subtype), decreasing=TRUE)[3]/nrow(data)
+100*sort(table(data$Subtype), decreasing=TRUE)[5]/nrow(data)
+
+
+### H1N1
+sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H1N1"),])
+100*sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[2]/nrow(data[which(data$Subtype=="H1N1"),])
+100*sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[3]/nrow(data[which(data$Subtype=="H1N1"),])
+100*sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE)[4]/nrow(data[which(data$Subtype=="H1N1"),])
+
+#The first Ha/NA pairing:
+i <- 1
+name_temp <- names(sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H1N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #3 constellations does it
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+
+#The second Ha/NA pairing:
+i <- 2
+name_temp <- names(sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H1N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #2 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+
+#The third Ha/NA pairing:
+i <- 3
+name_temp <- names(sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H1N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #3 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+
+#The fourth Ha/NA pairing:
+i <- 4
+name_temp <- names(sort(table(data[which(data$Subtype=="H1N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H1N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #4 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[4]/nrow(data_temp_nona)
+
+### H1N2
+sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H1N2"),])
+100*sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[2]/nrow(data[which(data$Subtype=="H1N2"),])
+100*sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE)[3]/nrow(data[which(data$Subtype=="H1N2"),])
+
+#The first Ha/NA pairing:
+i <- 1
+name_temp <- names(sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H1N2" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #2 constellation does it
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+
+#The second Ha/NA pairing:
+i <- 2
+name_temp <- names(sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H1N2" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #3 constellations is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+
+#The third Ha/NA pairing:
+i <- 3
+name_temp <- names(sort(table(data[which(data$Subtype=="H1N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H1N2" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #1 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+
+### H3N2
+sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H3N2"),])
+100*sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[2]/nrow(data[which(data$Subtype=="H3N2"),])
+100*sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE)[3]/nrow(data[which(data$Subtype=="H3N2"),])
+
+#The first Ha/NA pairing:
+i <- 1
+name_temp <- names(sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H3N2" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #2 constellations captures most of it.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+
+#The second Ha/NA pairing:
+i <- 2
+name_temp <- names(sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H3N2" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #3 constellations is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+
+#The third Ha/NA pairing:
+i <- 3
+name_temp <- names(sort(table(data[which(data$Subtype=="H3N2"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H3N2" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #1 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+
+### H3N1
+sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)
+100*sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)[1]/nrow(data[which(data$Subtype=="H3N1"),])
+100*sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)[2]/nrow(data[which(data$Subtype=="H3N1"),])
+100*sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)[3]/nrow(data[which(data$Subtype=="H3N1"),])
+100*sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE)[4]/nrow(data[which(data$Subtype=="H3N1"),])
+
+#The first Ha/NA pairing:
+i <- 1
+name_temp <- names(sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H3N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #3 constellations does it
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+
+#The second Ha/NA pairing:
+i <- 2
+name_temp <- names(sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H3N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #2 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+
+#The third Ha/NA pairing:
+i <- 3
+name_temp <- names(sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H3N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #3 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+
+#The fourth Ha/NA pairing:
+i <- 4
+name_temp <- names(sort(table(data[which(data$Subtype=="H3N1"),]$H_N_complex), decreasing=TRUE))[i];name_temp
+data_temp <- data[which(data$Subtype=="H3N1" & data$H_N_complex == name_temp),]
+const_exclude <- c(unique(data_temp$Constellation[grep("-", data_temp$Constellation)]), "", "NA", NA)
+data_temp_nona <- data_temp[data_temp$Constellation %!in% const_exclude,];dim(data_temp);dim(data_temp_nona)
+sort(table(data_temp$Constellation), decreasing=TRUE);sort(table(data_temp_nona$Constellation), decreasing=TRUE) #4 constellation is enough.
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[1]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[2]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[3]/nrow(data_temp_nona)
+100*sort(table(data_temp_nona$Constellation), decreasing=TRUE)[4]/nrow(data_temp_nona)
+
+##############################
+##############################
+
+
+
+
 
 ################
 #for section 3.2: 
@@ -1113,6 +1390,3 @@ write.csv(data_5ym, "microreact_input_5y.csv", row.names=FALSE)
 ##############################
 ##############################
 ##############################
-
-
-
