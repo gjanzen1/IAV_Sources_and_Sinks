@@ -667,7 +667,7 @@ nodes_m$font.size <- 40
 
 ssldf_threshold <- mutate(ssldf_threshold, width = weight)
 visNetwork(nodes_m, ssldf_threshold,
-           main = list(text = "Main Title Goes Here",
+           main = list(text = "",
                        style = "font-family:Arial;color:#000000;font-size:15px;text-align:center;")) %>%
   visIgraphLayout(layout = "layout_with_fr") %>%
   visEdges(arrows = "from")
@@ -700,23 +700,15 @@ nrow(data_nona_2022[which(data_nona_2022$Constellation %in% PP),])/nrow(data_non
 data_2020 <- data_nona[which(data_nona$Date_year < 2021),];dim(data_2020)
 data_2021 <- data_nona[which(data_nona$Date_year > 2020),];dim(data_2021)
 
-unique(data_2020$H_complex)
-unique(data_2021$H_complex)
-
 unique(data_2021$H_complex)[unique(data_2021$H_complex) %in% unique(data_2020$H_complex)]
 unique(data_2021$H_complex)[unique(data_2021$H_complex) %!in% unique(data_2020$H_complex)] # H clades that only show later
-
 unique(data_2020$H_complex)[unique(data_2020$H_complex) %in% unique(data_2021$H_complex)]
 unique(data_2020$H_complex)[unique(data_2020$H_complex) %!in% unique(data_2021$H_complex)] # H clades that only show earlier
 
-unique(data_2020$N_complex)
-unique(data_2021$N_complex)
-
 unique(data_2021$N_complex)[unique(data_2021$N_complex) %in% unique(data_2020$N_complex)]
-unique(data_2021$N_complex)[unique(data_2021$N_complex) %!in% unique(data_2020$N_complex)] # H clades that only show later
-
+unique(data_2021$N_complex)[unique(data_2021$N_complex) %!in% unique(data_2020$N_complex)] # N clades that only show later
 unique(data_2020$N_complex)[unique(data_2020$N_complex) %in% unique(data_2021$N_complex)]
-unique(data_2020$N_complex)[unique(data_2020$N_complex) %!in% unique(data_2021$N_complex)] # H clades that only show earlier
+unique(data_2020$N_complex)[unique(data_2020$N_complex) %!in% unique(data_2021$N_complex)] # N clades that only show earlier
 
 #####
 # 2013-2018
@@ -724,13 +716,13 @@ unique(data_2020$N_complex)[unique(data_2020$N_complex) %!in% unique(data_2021$N
 head(df)
 df2 <- df
 df2$Year_min <- substr(df2$Date_min, 1, 4);table(df2$Year_min)
-plot(df2$Year_min)
 mean(table(df2$Year_min)[2:4]) #mean number of new recombinants 2010-2012
 mean(table(df2$Year_min)[5:8]) #mean number of new recombinants 2013-2017
-mean(table(df2$Year_min)[10:14]) #mean number of new recombinants 2018-2023
-mean(table(df2$Year_min)[13:14]) #mean number of new recombinants 2021-2023
+mean(table(df2$Year_min)[10:14]) #mean number of new recombinants 2018-2022
+mean(table(df2$Year_min)[13:14]) #mean number of new recombinants 2021-2022
 table(df2$Year_min)
 #####
 
-
-
+##############################
+##############################
+##############################
