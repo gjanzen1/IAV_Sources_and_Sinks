@@ -38,19 +38,13 @@ The file microreact_input_5y.csv is written by script 1. The microreact figure i
    
 ## Authors
 Garrett M. Janzen
-[@garrettjanzen](https://twitter.com/garrettjanzen)
-
-Blake T. Inderski
-
-Jennifer Chang
-
-Zebulun W. Arendsee
-
-Alicia Janas-Martindale
-
-Mia Kim Torchetti
-
-Amy L. Baker
+[@garrettjanzen](https://twitter.com/garrettjanzen)\
+Blake T. Inderski\
+Jennifer Chang\
+Zebulun W. Arendsee\
+Alicia Janas-Martindale\
+Mia Kim Torchetti\
+Amy L. Baker\
 Tavis K. Anderson
 
 ## Acknowledgments
