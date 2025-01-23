@@ -40,6 +40,20 @@ The file microreact_input_5y.csv is written by script 1. The microreact figure i
 Garrett M. Janzen
 [@garrettjanzen](https://twitter.com/garrettjanzen)
 
+Blake T. Inderski
+
+Jennifer Chang
+
+Zebulun W. Arendsee
+
+Alicia Janas-Martindale
+
+Mia Kim Torchetti
+
+Amy L. Baker
+
+Tavis K. Anderson
+
 ## Acknowledgments
 Thanks to co-authors Blake T. Inderski, Jennifer Chang, Zebulun W. Arendsee, Alicia Janas-Martindale, Mia Torchetti, Amy L. Baker, Tavis K. Anderson, and to all members of the Flu-Crew at the National Animal Disease Center, USDA-ARS.
 
