@@ -27,7 +27,7 @@ This script establishes a time series of detections and runs analyses and looks 
 This script uses Markov Chains to model state-to-state IAV transition probabilities, provides code for testing real and hypothetical IAV strain detection orders, and statistics to evaluate model prediction performance. You must load `IAV_Sources_and_Sinks.RData`, modified and saved in Script 3, to run this script.
 
 ### Microreact
-The file microreact_input_5y.csv is written by script 1. The microreact figure in this manuscript can be made by following these steps:
+The file `microreact_input_5y.csv` is written by script 1. The microreact figure in this manuscript can be made by following these steps:
  * Go to [the microreact website](https://microreact.org/upload).
  * Drag and drop the file into the page.
  * Select `continue`.
