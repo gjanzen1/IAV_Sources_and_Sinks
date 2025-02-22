@@ -65,12 +65,12 @@ onehot_2022 <- t(data.frame(lapply(table_2022,onehot_fun)));colnames(onehot_2022
 table_full <- as.data.frame.matrix(table(data_nona[,c("State","UID_complex")]))
 onehot_full <- t(data.frame(lapply(table_full,onehot_fun)));colnames(onehot_full) <- row.names(table_full)
 
-df_list <- list(onehot_2010, onehot_2011, onehot_2012, onehot_2013, onehot_2014, onehot_2015,
-                onehot_2016, onehot_2017, onehot_2018, onehot_2019, onehot_2020, onehot_2021, onehot_2022, onehot_full)
+# df_list <- list(onehot_2010, onehot_2011, onehot_2012, onehot_2013, onehot_2014, onehot_2015,
+#                 onehot_2016, onehot_2017, onehot_2018, onehot_2019, onehot_2020, onehot_2021, onehot_2022, onehot_full)
 val <- max(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
              nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));val
-minval <- min(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
-                nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));minval
+# minval <- min(c(nrow(table_2010),nrow(table_2011),nrow(table_2012),nrow(table_2013),nrow(table_2014),nrow(table_2015),
+#                 nrow(table_2016),nrow(table_2017),nrow(table_2018),nrow(table_2019),nrow(table_2020),nrow(table_2021),nrow(table_2022),nrow(table_full)));minval
 
 ##########################
 ### Calculate zeta diversity with the R package "zetadiv"
@@ -132,38 +132,24 @@ zeta.decline_2019 <- Zeta.decline.mc(onehot_2019_t[,-c(1:3)], onehot_2019_t[,2:3
 zeta.decline_2020 <- Zeta.decline.mc(onehot_2020_t[,-c(1:3)], onehot_2020_t[,2:3], orders = 1:nrow(onehot_2020_t), sam = 100, NON = TRUE)
 zeta.decline_2021 <- Zeta.decline.mc(onehot_2021_t[,-c(1:3)], onehot_2021_t[,2:3], orders = 1:nrow(onehot_2021_t), sam = 100, NON = TRUE)
 zeta.decline_2022 <- Zeta.decline.mc(onehot_2022_t[,-c(1:3)], onehot_2022_t[,2:3], orders = 1:nrow(onehot_2022_t), sam = 100, NON = TRUE)
-zeta.decline_full <- Zeta.decline.mc(onehot_full_t[,-c(1:3)], onehot_full_t[,2:3], orders = 1:nrow(onehot_full_t), sam = 100, NON = TRUE) # Supplemental Figure S2
+zeta.decline_full <- Zeta.decline.mc(onehot_full_t[,-c(1:3)], onehot_full_t[,2:3], orders = 1:nrow(onehot_full_t), sam = 100, NON = TRUE)
 
-Plot.zeta.decline(zeta.decline_2010)
-Plot.zeta.decline(zeta.decline_2011)
-Plot.zeta.decline(zeta.decline_2012)
-Plot.zeta.decline(zeta.decline_2013)
-Plot.zeta.decline(zeta.decline_2014)
-Plot.zeta.decline(zeta.decline_2015)
-Plot.zeta.decline(zeta.decline_2016)
-Plot.zeta.decline(zeta.decline_2017)
-Plot.zeta.decline(zeta.decline_2018)
-Plot.zeta.decline(zeta.decline_2019)
-Plot.zeta.decline(zeta.decline_2020)
-Plot.zeta.decline(zeta.decline_2021)
-Plot.zeta.decline(zeta.decline_2022)
-Plot.zeta.decline(zeta.decline_full)
-
-pdf("Plots/script2_zeta_decline_2010.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2010);dev.off()
-pdf("Plots/script2_zeta_decline_2011.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2011);dev.off()
-pdf("Plots/script2_zeta_decline_2012.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2012);dev.off()
-pdf("Plots/script2_zeta_decline_2013.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2013);dev.off()
-pdf("Plots/script2_zeta_decline_2014.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2014);dev.off()
-pdf("Plots/script2_zeta_decline_2015.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2015);dev.off()
-pdf("Plots/script2_zeta_decline_2016.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2016);dev.off()
-pdf("Plots/script2_zeta_decline_2017.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2017);dev.off()
-pdf("Plots/script2_zeta_decline_2018.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2018);dev.off()
-pdf("Plots/script2_zeta_decline_2019.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2019);dev.off()
-pdf("Plots/script2_zeta_decline_2020.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2020);dev.off()
-pdf("Plots/script2_zeta_decline_2021.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2021);dev.off()
-pdf("Plots/script2_zeta_decline_2022.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2022);dev.off()
-pdf("Plots/script2_zeta_decline_full.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_full);dev.off()
+# pdf("Plots/script2_zeta_decline_2010.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2010);dev.off()
+# pdf("Plots/script2_zeta_decline_2011.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2011);dev.off()
+# pdf("Plots/script2_zeta_decline_2012.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2012);dev.off()
+# pdf("Plots/script2_zeta_decline_2013.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2013);dev.off()
+# pdf("Plots/script2_zeta_decline_2014.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2014);dev.off()
+# pdf("Plots/script2_zeta_decline_2015.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2015);dev.off()
+# pdf("Plots/script2_zeta_decline_2016.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2016);dev.off()
+# pdf("Plots/script2_zeta_decline_2017.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2017);dev.off()
+# pdf("Plots/script2_zeta_decline_2018.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2018);dev.off()
+# pdf("Plots/script2_zeta_decline_2019.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2019);dev.off()
+# pdf("Plots/script2_zeta_decline_2020.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2020);dev.off()
+# pdf("Plots/script2_zeta_decline_2021.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2021);dev.off()
+# pdf("Plots/script2_zeta_decline_2022.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_2022);dev.off()
+# pdf("Plots/script2_zeta_decline_full.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_full);dev.off()
 png("Plots/script2_zeta_decline_full.png", height=200, width=800);Plot.zeta.decline(zeta.decline_full);dev.off()
+pdf("Plots/script2_zeta_decline_full.pdf", height=3, width=9);Plot.zeta.decline(zeta.decline_full);dev.off()
 
 ####
 
@@ -268,79 +254,79 @@ plot2 <- ggplot(test_merge, aes(y=Zeta, x=Zeta_Order, group=Year, color=Year)) +
         axis.text.x = element_text(size = 22),
         text = element_text(size = 26));plot2
 
-pdf("Plots/script2_zeta_betterversion_full.pdf")
-plot2_full
-dev.off()
-png("Plots/script2_zeta_betterversion_full.png", width=700, height=550)
-plot2_full
-dev.off()
-
-pdf("Plots/script2_zeta_betterversion.pdf")
+pdf("Plots/script2_zeta.pdf", height=5, width=8)
 plot2
 dev.off()
-png("Plots/script2_zeta_betterversion.png", width=650, height=550)
+png("Plots/script2_zeta.png", width=650, height=550)
 plot2
 dev.off()
 
-############################
-### Making a plot of the per-year average zeta ratio
+# pdf("Plots/script2_zeta_full.pdf")
+# plot2_full
+# dev.off()
+# png("Plots/script2_zeta_full.png", width=700, height=550)
+# plot2_full
+# dev.off()
 
-length(zeta.decline_2010$ratio) <- val
-length(zeta.decline_2011$ratio) <- val
-length(zeta.decline_2012$ratio) <- val
-length(zeta.decline_2013$ratio) <- val
-length(zeta.decline_2014$ratio) <- val
-length(zeta.decline_2015$ratio) <- val
-length(zeta.decline_2016$ratio) <- val
-length(zeta.decline_2017$ratio) <- val
-length(zeta.decline_2018$ratio) <- val
-length(zeta.decline_2019$ratio) <- val
-length(zeta.decline_2020$ratio) <- val
-length(zeta.decline_2021$ratio) <- val
-length(zeta.decline_2022$ratio) <- val
-
-test <- cbind(
-  c(1:val), 
-  zeta.decline_2010$ratio,
-  zeta.decline_2011$ratio,
-  zeta.decline_2012$ratio,
-  zeta.decline_2013$ratio,
-  zeta.decline_2014$ratio,
-  zeta.decline_2015$ratio,
-  zeta.decline_2016$ratio,
-  zeta.decline_2017$ratio,
-  zeta.decline_2018$ratio,
-  zeta.decline_2019$ratio,
-  zeta.decline_2020$ratio,
-  zeta.decline_2021$ratio,
-  zeta.decline_2022$ratio)
-colnames(test) <- c("order","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022")
-test_melt <- melt(test)
-colnames(test_melt) <- c("Zeta_Order","Year","Ratio")
-test_melt <- test_melt[which(test_melt$Year != "order"),]
-test_melt$Ratio <- ifelse(is.na(test_melt$Ratio), 0, test_melt$Ratio)
-
-plot3 <- ggplot(test_melt, aes(y=Ratio, x=Zeta_Order)) +
-  geom_line(aes(color=Year), size=1) + 
-  geom_point(aes(color=Year), size=2) +
-  xlim(0.95,16) +
-  # ylim(0,8) +
-  geom_smooth(se = T, size = 2) +
-  labs(title="Ratio of Zeta Diversity decline",
-       x ="Zeta Order",
-       y = "Zeta Ratio") +
-  # geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1)) + #un-comment for SD bars
-  theme(legend.title=element_blank(),
-        axis.text.y = element_text(size = 22),
-        axis.text.x = element_text(size = 22),
-        text = element_text(size = 26));plot3
-
-pdf("Plots/script2_zeta_ratio.pdf")
-plot3
-dev.off()
-png("Plots/script2_zeta_ratio.png", width=700, height=550)
-plot3
-dev.off()
+# ############################
+# ### Making a plot of the per-year average zeta ratio
+# 
+# length(zeta.decline_2010$ratio) <- val
+# length(zeta.decline_2011$ratio) <- val
+# length(zeta.decline_2012$ratio) <- val
+# length(zeta.decline_2013$ratio) <- val
+# length(zeta.decline_2014$ratio) <- val
+# length(zeta.decline_2015$ratio) <- val
+# length(zeta.decline_2016$ratio) <- val
+# length(zeta.decline_2017$ratio) <- val
+# length(zeta.decline_2018$ratio) <- val
+# length(zeta.decline_2019$ratio) <- val
+# length(zeta.decline_2020$ratio) <- val
+# length(zeta.decline_2021$ratio) <- val
+# length(zeta.decline_2022$ratio) <- val
+# 
+# test <- cbind(
+#   c(1:val), 
+#   zeta.decline_2010$ratio,
+#   zeta.decline_2011$ratio,
+#   zeta.decline_2012$ratio,
+#   zeta.decline_2013$ratio,
+#   zeta.decline_2014$ratio,
+#   zeta.decline_2015$ratio,
+#   zeta.decline_2016$ratio,
+#   zeta.decline_2017$ratio,
+#   zeta.decline_2018$ratio,
+#   zeta.decline_2019$ratio,
+#   zeta.decline_2020$ratio,
+#   zeta.decline_2021$ratio,
+#   zeta.decline_2022$ratio)
+# colnames(test) <- c("order","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022")
+# test_melt <- melt(test)
+# colnames(test_melt) <- c("Zeta_Order","Year","Ratio")
+# test_melt <- test_melt[which(test_melt$Year != "order"),]
+# test_melt$Ratio <- ifelse(is.na(test_melt$Ratio), 0, test_melt$Ratio)
+# 
+# plot3 <- ggplot(test_melt, aes(y=Ratio, x=Zeta_Order)) +
+#   geom_line(aes(color=Year), size=1) + 
+#   geom_point(aes(color=Year), size=2) +
+#   xlim(0.95,16) +
+#   # ylim(0,8) +
+#   geom_smooth(se = T, size = 2) +
+#   labs(title="Ratio of Zeta Diversity decline",
+#        x ="Zeta Order",
+#        y = "Zeta Ratio") +
+#   # geom_errorbar(aes(ymin=Zeta-SD, ymax=Zeta+SD), size=0.5, width=.3, position=position_dodge(0.1)) + #un-comment for SD bars
+#   theme(legend.title=element_blank(),
+#         axis.text.y = element_text(size = 22),
+#         axis.text.x = element_text(size = 22),
+#         text = element_text(size = 26));plot3
+# 
+# pdf("Plots/script2_zeta_ratio.pdf")
+# plot3
+# dev.off()
+# png("Plots/script2_zeta_ratio.png", width=700, height=550)
+# plot3
+# dev.off()
 
 ##############################
 ### What is the area under the curves of plot2?
@@ -382,7 +368,7 @@ plot5 <- ggplot(aucdf, aes(y=AUC, x=Year)) +
        x ="Year",
        y = "AUC");plot5
 
-pdf("Plots/script2_zeta_auc.pdf")
+pdf("Plots/script2_zeta_auc.pdf", height=8, width=7)
 plot5
 dev.off()
 png("Plots/script2_zeta_auc.png", width=650, height=550)
