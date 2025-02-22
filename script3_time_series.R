@@ -24,7 +24,6 @@ library("visNetwork")
 
 ### Make two new columns that track weeks (weeks 1:52 with replicates, and weeks 1:n)
 
-# data$Date_year <- ifelse(data$Week_per_Year == 53, as.character(as.numeric(data$Date_year)+1), data$Date_year)
 data$Date_year <- substr(data$Date, start=1, stop=4);plot(data$Date_year);data$Date_year[1:20]
 data$Week_per_Year <- isoweek(data$Date);any(data$Week_per_Year > 52)
 data$Week_per_Year <- ifelse(data$Week_per_Year == 53, 1, data$Week_per_Year);plot(data$Week_per_Year);max(data$Week_per_Year)
@@ -40,7 +39,6 @@ temp$Var1 <- as.factor(temp$Var1)
 temp2$Var1 <- as.factor(temp2$Var1)
 head(temp);head(temp2)
 temp3 <- merge(temp, temp2, by="Var1", all=TRUE)
-# temp3$Var1 <- as.integer(temp3$Var1)
 temp3[is.na(temp3)] <- 0
 temp3$Var1 <- as.numeric(as.character(temp3$Var1))
 temp3 <- temp3[order(temp3$Var1),];temp3
@@ -57,7 +55,6 @@ all(temp3$Var1 - temp3$Order == 43)
 plot(temp3$Freq)
 
 plot <- ggplot(temp3, aes(y=Freq, x=Var1)) +
-  # geom_line(aes(color=Constellation), size=1.5) + 
   geom_point(size=0.5) +
   geom_line() +
   geom_smooth(span = 0.1, color="red", size=2) +
@@ -68,17 +65,14 @@ plot <- ggplot(temp3, aes(y=Freq, x=Var1)) +
        x ="Week",
        y = "Number of IAV cases within a week");plot
 
-pdf("Plots/script3_case_frequency_over_time.pdf",width=8)
-plot
-dev.off()
-
-png("Plots/script3_case_frequency_over_time.png",width=1000)
-plot
-dev.off()
+# pdf("Plots/script3_case_frequency_over_time.pdf",width=8)
+# plot
+# dev.off()
+# png("Plots/script3_case_frequency_over_time.png",width=1000)
+# plot
+# dev.off()
 
 tempts <- ts(temp3$Freq, start=c(temp3$Year[1],temp3$Var2[1]), end=c(temp3$Year[nrow(temp3)],temp3$Var2[nrow(temp3)]), frequency=52)
-# m <- stats::stl(tempts, s.window="periodic") # this line can be modified to produce highly customizable time series plots
-# m <- stats::decompose(tempts, type="multiplicative") # this line can be used to change the seasonal and random plots to be multiplicative effects
 m <- stats::decompose(tempts, type="additive")
 plot(m)
 
@@ -96,30 +90,23 @@ min(data$Week_per_Period) # according to m$seasonal, the start of the series is 
 plot(table(data$Week_per_Year)) #This serves as a sanity check of seasonality in the data
 length((53-(44-1)):((53-(44-1))+52)) # this series of 53 weeks spans from datapoint 10 (corresponding to week 1 of 2010) to datapoint 62 (week 1 of 2011), a full season +1 week
 plot.ts(m$seasonal[(53-(44-1)):((53-(44-1))+52)])
-#max at week 44 (early November), mid-peak "dip" on week 52 (end of year), prolonged tapering off through week 18 (early May), min at week 29 (mid-late July)
-# #plot the major peak and minor trough between the two peaks:
-# plot.ts(m$seasonal[51:64]) # peak at 3 (=week 53 =week1, January 1-7), trough at week 11 (=week 61 =week 9, Feb 28-Mar 6)
-# #plot the major trough:
-# plot.ts(m$seasonal[86:95]) # trough at 5 (=week 90 =week 38, Sept 19-25)
-# plot.ts(m$trend) #The trend's fist and last datapoints are not the first and last weeks we have data, as it is a moving average.
 
 seasonal <- as.data.frame(m$seasonal)
 seasonal$index <- seq(1, nrow(seasonal))
 
-plot2 <- ggplot(seasonal, aes(y=x, x=index)) +
-  geom_point(size=0.5) +
-  geom_line() +
-  geom_smooth(span = 0.1, color="red", size=2) +
-  geom_smooth(span = 0.025, color="blue", size=2) + 
-  geom_vline(xintercept = seq((52-44), 52*12, by=52), linetype="dotted", size=0.5) +
-  #xlim(0.95,15) +
-  labs(title="Seasonal component of change in number of IAV cases over time",
-       x ="Week",
-       y = "Number of IAV cases within a week")
-
-pdf("Plots/script3_case_frequency_over_time_decomposition_seasonal.pdf",width=8, height=5)
-plot2
-dev.off()
+# plot2 <- ggplot(seasonal, aes(y=x, x=index)) +
+#   geom_point(size=0.5) +
+#   geom_line() +
+#   geom_smooth(span = 0.1, color="red", size=2) +
+#   geom_smooth(span = 0.025, color="blue", size=2) + 
+#   geom_vline(xintercept = seq((52-44), 52*12, by=52), linetype="dotted", size=0.5) +
+#   labs(title="Seasonal component of change in number of IAV cases over time",
+#        x ="Week",
+#        y = "Number of IAV cases within a week")
+# 
+# pdf("Plots/script3_case_frequency_over_time_decomposition_seasonal.pdf",width=8, height=5)
+# plot2
+# dev.off()
 
 ### Make two new columns that track months (months 1:12 with replicates, and months 1:n)
 
@@ -148,26 +135,23 @@ temp3$Year <- as.numeric(min(data$Date_year)) + floor((temp3$Var1-1)/12)
 all(temp3$Var1 - temp3$Order == 10)
 plot(temp3$Freq)
 
-plot <- ggplot(temp3, aes(y=Freq, x=Var1)) +
-  # geom_line(aes(color=Constellation), size=1.5) + 
-  geom_point(size=0.5) +
-  geom_line() +
-  # geom_smooth(span = 0.3) +
-  geom_smooth(method="loess", span = 0.1, color="red", size=2) +
-  geom_smooth(method="loess", span = 0.2, color="green", size=2) +
-  geom_smooth(method="loess", span = 0.025, color="blue", size=2) +
-  # geom_smooth(method = glm, se=F) +
-  geom_vline(xintercept = seq(12, 12*14, by=12), linetype="dotted", size=0.5) +
-  #xlim(0.95,15) +
-  labs(title="Change in number of IAV cases over time",
-       x ="Month",
-       y = "Number of IAV cases within a month");plot
-
-pdf("Plots/script3_case_frequency_over_time_month.pdf",width=8)
-plot
-dev.off()
+# plot <- ggplot(temp3, aes(y=Freq, x=Var1)) +
+#   geom_point(size=0.5) +
+#   geom_line() +
+#   geom_smooth(method="loess", span = 0.1, color="red", size=2) +
+#   geom_smooth(method="loess", span = 0.2, color="green", size=2) +
+#   geom_smooth(method="loess", span = 0.025, color="blue", size=2) +
+#   geom_vline(xintercept = seq(12, 12*14, by=12), linetype="dotted", size=0.5) +
+#   labs(title="Change in number of IAV cases over time",
+#        x ="Month",
+#        y = "Number of IAV cases within a month");plot
+# 
+# pdf("Plots/script3_case_frequency_over_time_month.pdf",width=8)
+# plot
+# dev.off()
 
 rm(temp,temp1,temp2,temp3)
+
 ######################################
 data_usda <- as.data.frame(read.csv("Data/usda_quick_stats_10_3_24.csv"))
 data_usda$State_code <- state.abb[match(tolower(data_usda$State),tolower(state.name))]
@@ -198,16 +182,15 @@ plot <- ggplot(data_usda_agg_mut, aes(y=Production, x=State)) +
        x ="State",
        y = paste0(production_name, " (measured in head)"));plot
 
-pdf("Plots/script3_hog_production.pdf")
-plot
-dev.off()
+# pdf("Plots/script3_hog_production.pdf")
+# plot
+# dev.off()
 
 rm(plot)
 
 ##########################
 ### See where each constellation begins, and ends
 
-# data_ss <- data
 data_ss <- data_nona
 data_ss <- data_ss[order(data_ss$Date),];dim(data_ss)
 data_ss <- data_ss[!grepl("-", data_ss$Constellation),];dim(data_ss)
@@ -229,7 +212,6 @@ i <- NULL
 dmin <- as.Date(min(data_ss$Date))
 dmax <- as.Date(max(data_ss$Date))
 for(i in 1:length(UIDs_complex)){
-  # i <- 11
   con <- UIDs_complex[i]
   dat <- data_ss[which(data_ss$UID_complex == con),]
   date_min <- min(dat$Date)
@@ -348,22 +330,20 @@ plot2 <- ggplot(ss_usda_mut2_melt, aes(fill=variable, y=value, x=State)) +
        y = "Count")+
   theme(legend.title=element_blank());plot2
 
-pdf("Plots/script3_begin_end_states.pdf")
-plot1
-dev.off()
+# pdf("Plots/script3_begin_end_states.pdf")
+# plot1
+# dev.off()
+# png("Plots/script3_begin_end_states.png", width=1000)
+# plot1
+# dev.off()
 
-png("Plots/script3_begin_end_states.png", width=1000)
-plot1
-dev.off()
-
-png("Plots/script3_begin_end_states_poster.png", width=800, height=550)
-plot1_poster
-dev.off()
+# png("Plots/script3_begin_end_states_poster.png", width=800, height=550)
+# plot1_poster
+# dev.off()
 
 pdf("Plots/script3_begin_end_states_production.pdf")
 plot2
 dev.off()
-
 png("Plots/script3_begin_end_states_production.png", width=800, height=350)
 plot2
 dev.off()
@@ -394,7 +374,6 @@ df_mut <- df_mut[which(nchar(as.character(df_mut$Constellation)) > 6),]
 
 plot2 <- ggplot(df, aes(x=Date_min, xend=Date_max, y=Constellation, yend=Constellation)) +
   geom_segment() +
-  # scale_x_continuous(breaks = round(seq( min(df_mut$Date_min), max(df_mut$Date_max), by = 365),1)) +
   geom_vline(xintercept = min(df$Date_min)+window, linetype="dotted") +
   geom_vline(xintercept = max(df$Date_max)-window, linetype="dotted") +
   theme(axis.text.y = element_text(size = 6)) +
@@ -404,7 +383,6 @@ plot2 <- ggplot(df, aes(x=Date_min, xend=Date_max, y=Constellation, yend=Constel
 
 plot3 <- ggplot(df_mut, aes(x=Date_min, xend=Date_max_inflate, y=Constellation, yend=Constellation)) +
   geom_segment() +
-  # scale_x_continuous(breaks = round(seq( min(df_mut$Date_min), max(df_mut$Date_max), by = 365),1)) +
   geom_vline(xintercept = min(df_mut$Date_min)+window, linetype="dotted") +
   geom_vline(xintercept = max(df_mut$Date_max)-window, linetype="dotted") +
   theme(axis.text.y = element_text(size = 8)) +
@@ -416,7 +394,6 @@ plot3 <- ggplot(df_mut, aes(x=Date_min, xend=Date_max_inflate, y=Constellation, 
 
 plot3_nolabels <- ggplot(df_mut, aes(x=Date_min, xend=Date_max_inflate, y=Constellation, yend=Constellation)) +
   geom_segment() +
-  # scale_x_continuous(breaks = round(seq( min(df_mut$Date_min), max(df_mut$Date_max), by = 365),1)) +
   geom_vline(xintercept = min(df_mut$Date_min)+window, linetype="dotted") +
   geom_vline(xintercept = max(df_mut$Date_max)-window, linetype="dotted") +
   theme(axis.text.y = element_text(size = 24)) +
@@ -431,19 +408,16 @@ plot3_nolabels <- ggplot(df_mut, aes(x=Date_min, xend=Date_max_inflate, y=Conste
 
 plot3_poster <- ggplot(df_mut, aes(x=Date_min, xend=Date_max_inflate, y=Constellation, yend=Constellation)) +
   geom_segment(size = 2) +
-  # scale_x_continuous(breaks = round(seq( min(df_mut$Date_min), max(df_mut$Date_max), by = 365),1)) +
   geom_vline(xintercept = min(df_mut$Date_min)+window, linetype="dotted") +
   geom_vline(xintercept = max(df_mut$Date_max)-window, linetype="dotted") +
   theme(axis.text.y = element_text(size = 20),
           text = element_text(size=24)) +
-  # scale_x_continuous(name="Time",breaks=seq(2010, 2020, 1)) +
   labs(title=paste0("IAV Constellation Diversity Detection\n Periods, ", min(df_mut$Date_min), " to ", max(df_mut$Date_max)),
        x ="Time",
        y = "Constellation");plot3_poster
 
 plot4 <- ggplot(df_mut2, aes(x=Date_min, xend=Date_max, y=Constellation, yend=Constellation)) +
   geom_segment() +
-  # scale_x_continuous(breaks = round(seq( min(df_mut$Date_min), max(df_mut$Date_max), by = 365),1)) +
   geom_vline(xintercept = min(df_mut2$Date_min)+window, linetype="dotted") +
   geom_vline(xintercept = max(df_mut2$Date_max)-window, linetype="dotted") +
   theme(axis.text.y = element_text(size = 6)) +
@@ -454,7 +428,6 @@ plot4 <- ggplot(df_mut2, aes(x=Date_min, xend=Date_max, y=Constellation, yend=Co
 df_mut_late <- df_mut[which(df_mut$Date_min > as.Date("2019-06-01")),]
 plot3_late <- ggplot(df_mut_late, aes(x=Date_min, xend=Date_max_inflate, y=Constellation, yend=Constellation)) +
   geom_segment() +
-  # scale_x_continuous(breaks = round(seq( min(df_mut$Date_min), max(df_mut$Date_max), by = 365),1)) +
   geom_vline(xintercept = max(df_mut_late$Date_max)-window, linetype="dotted") +
   theme(axis.text.y = element_text(size = 6)) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
@@ -466,7 +439,6 @@ plot3_late <- ggplot(df_mut_late, aes(x=Date_min, xend=Date_max_inflate, y=Const
 df_mut_PPPPPP <- df_mut[which(str_sub(df_mut$Constellation,-6,-1) == "PPPPPP"),]
 plot3_PPPPPP <- ggplot(df_mut_PPPPPP, aes(x=Date_min, xend=Date_max_inflate, y=Constellation, yend=Constellation)) +
   geom_segment() +
-  # scale_x_continuous(breaks = round(seq( min(df_mut$Date_min), max(df_mut$Date_max), by = 365),1)) +
   geom_vline(xintercept = max(df_mut_late$Date_max)-window, linetype="dotted") +
   theme(axis.text.y = element_text(size = 6)) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
@@ -475,37 +447,37 @@ plot3_PPPPPP <- ggplot(df_mut_PPPPPP, aes(x=Date_min, xend=Date_max_inflate, y=C
        x ="Time",
        y = "Subtype/Constellation");plot3_PPPPPP
 
-pdf("Plots/script3_begin_end_timeline.pdf", height=8)
-plot2
-dev.off()
+# pdf("Plots/script3_begin_end_timeline.pdf", height=8)
+# plot2
+# dev.off()
 
-pdf("Plots/script3_begin_end_timeline_sort.pdf", height=8)
-plot3
-dev.off()
+# pdf("Plots/script3_begin_end_timeline_sort.pdf", height=8)
+# plot3
+# dev.off()
 
 pdf("Plots/script3_begin_end_timeline_sort_searchable.pdf", width=10, height=40)
 plot3
 dev.off()
 
-png("Plots/script3_begin_end_timeline_sort.png", width=2000, height=3000)
-plot3
-dev.off()
+# png("Plots/script3_begin_end_timeline_sort.png", width=2000, height=3000)
+# plot3
+# dev.off()
 
-pdf("Plots/script3_begin_end_timeline_sort2.pdf", height=8)
-plot4
-dev.off()
+# pdf("Plots/script3_begin_end_timeline_sort2.pdf", height=8)
+# plot4
+# dev.off()
 
-png("Plots/script3_begin_end_timeline_sort_poster.png", width = 750, height = 2500)
-plot3_poster
-dev.off()
+# png("Plots/script3_begin_end_timeline_sort_poster.png", width = 750, height = 2500)
+# plot3_poster
+# dev.off()
 
 png("Plots/script3_begin_end_timeline_sort_nolabels.png", width = 900, height = 700)
 plot3_nolabels
 dev.off()
-
-png("Plots/script3_begin_end_timeline_sort_late.png", width = 750, height = 2000)
-plot3_late
-dev.off()
+# 
+# png("Plots/script3_begin_end_timeline_sort_late.png", width = 750, height = 2000)
+# plot3_late
+# dev.off()
 
 ################################
 # Stats for 3.3:
@@ -579,7 +551,6 @@ data_sub <- data_ss[,c("Date","State","UID_simple"),]
 #### !!! and must modify the line below, choosing `$Constellation`, `$UID_simple`, or `$UID_complex`
 
 for(i in 1:length(UIDs_simple)){
-  # i <- 3
   const <- UIDs_simple[i]
   dat <- data_sub[which(data_sub$UID_simple == const),];dim(dat)
   dat <- dat[which(!duplicated(dat$State)),];dim(dat)
@@ -605,7 +576,6 @@ for(i in 1:length(UIDs_simple)){
           k <- k + 1
         }
         if (dat$Date[r] != dat$Date[r+1+k]){
-          # statestring <- paste0(statestring, "&", dat$State[r], ":", dat$State[r+1+k])
           for(k in seq(k)){
             statestring <- paste0(statestring, "&", dat$State[r], ":", dat$State[r+1+k])
           }
@@ -687,13 +657,15 @@ save.image("IAV_Sources_and_Sinks.RData")
 ##########################
 ##### Some stats in 3.3:
 
-nrow(data_nona_2017plus[which(data_nona_2017plus$M == "pdm"),])/nrow(data_nona_2017plus)
+data_2017plus <- data_nona[which(data_nona$Date_year >= 2017),]
+nrow(data_2017plus[which(data_2017plus$M == "pdm"),])/nrow(data_2017plus)
 
-table(data_nona_2022$Constellation)
+data_2022 <- data_nona[which(data_nona$Date_year == "2022"),]
+table(data_2022$Constellation)
 
-nrow(data_nona_2022[which(data_nona_2022$M == "pdm"),])/nrow(data_nona_2022)
-PP <- grep("^([^P]*P[^P]*){2,}$", names(table(data_nona_2022$Constellation)), value = TRUE)
-nrow(data_nona_2022[which(data_nona_2022$Constellation %in% PP),])/nrow(data_nona_2022)
+nrow(data_2022[which(data_2022$M == "pdm"),])/nrow(data_2022)
+PP <- grep("^([^P]*P[^P]*){2,}$", names(table(data_2022$Constellation)), value = TRUE)
+nrow(data_2022[which(data_2022$Constellation %in% PP),])/nrow(data_2022)
 ##########################
 
 #make a data_2020 and data_2021, and compare H_complex between them
