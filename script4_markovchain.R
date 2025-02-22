@@ -1,7 +1,7 @@
 
 ################
 ### This script generates statistics and plots related to predictions of interstate spread of IAV.
-### Run script1 before running this script.
+### Run script1 and script3 before running this script.
 ################
 
 setwd("C:/Users/garrett.janzen/OneDrive - USDA/Projects/IAV_Env_Eco")
@@ -36,7 +36,6 @@ statestringlist_repeat <- list()
 statestring_repeat <- i <- r <- k <- NULL
 
 for(i in 1:length(UIDs_complex)){
-  # i <- 14
   const <- UIDs_complex[i]
   dat <- data_sub[which(data_sub$UID_complex == const),];dim(dat)
   statestring_repeat <- dat$State
@@ -56,7 +55,6 @@ statestringlist_repeat_xx <- statestringlist_repeat
 data_dmax <- as.Date(max(data$Date))
 
 for(i in 1:length(statestringlist_xx)){
-  # i <- 14
   const <- names(statestringlist_xx)[i]
   
   dat <- data_sub[which(data_sub$UID_complex == const),];dim(dat)
@@ -90,13 +88,6 @@ m_repeat_xx <- do.call("rbind", lapply(statestringlist_repeat_xx, function(x) cb
 mc_repeat_xx <- markovchainFit(m_repeat_xx)
 est_repeat_xx <- mc_repeat_xx$estimate
 tm_repeat_xx <- est_repeat_xx@transitionMatrix
-
-#Plots of the full model:
-est
-# plot(est)
-#Plots of the full model, allowing state repeats:
-est_repeat
-# plot(est_repeat)
 
 tm_melt <- melt(tm)
 colnames(tm_melt) <- c("Origin", "Destination", "Probability")
@@ -216,13 +207,6 @@ tm_reduced_thresh <- ifelse(tm_reduced <= 0.14, 0, tm_reduced)
 # dev.off()
 #########
 
-#Plots of the full model:
-est_xx
-# plot(est_xx)
-#Plots of the full model, allowing state repeats:
-est_repeat_xx
-# plot(est_repeat_xx)
-
 tm_melt_xx <- melt(tm_xx)
 colnames(tm_melt_xx) <- c("Origin", "Destination", "Probability")
 tm_melt_repeat_xx <- melt(tm_repeat_xx)
@@ -245,15 +229,15 @@ hmplot_repeat_xx <- ggplot(tm_melt_repeat_xx_noxxorigin, aes(Destination, Origin
 # pdf("Plots/script4_network_xx.pdf")
 # plot(est_xx)
 # dev.off()
-pdf("Plots/script4_tm_xx.pdf", width=9.5)
-hmplot_xx
-dev.off()
+# pdf("Plots/script4_tm_xx.pdf", width=9.5)
+# hmplot_xx
+# dev.off()
 # png("Plots/script4_network_xx.png")
 # plot(est_xx)
 # dev.off()
-png("Plots/script4_tm_xx.png", width=750)
-hmplot_xx
-dev.off()
+# png("Plots/script4_tm_xx.png", width=750)
+# hmplot_xx
+# dev.off()
 
 # pdf("Plots/script4_network_repeat_xx.pdf")
 # plot(est_repeat_xx)
@@ -361,21 +345,6 @@ mc_repeat_subset_xx <- markovchainFit(m_repeat_subset_xx)
 est_repeat_subset_xx <- mc_repeat_subset_xx$estimate
 tm_repeat_subset_xx <- est_repeat_subset_xx@transitionMatrix
 
-
-#Plots of the full model:
-est_subset
-plot(est_subset)
-#Plots of the full model, allowing state repeats:
-est_repeat_subset
-plot(est_repeat_subset)
-
-#Plots of the full model, with XX:
-est_subset_xx
-plot(est_subset_xx)
-#Plots of the full model, allowing state repeats, with XX:
-est_repeat_subset_xx
-plot(est_repeat_subset_xx)
-
 tm_melt_subset <- melt(tm_subset)
 colnames(tm_melt_subset) <- c("Origin", "Destination", "Probability")
 tm_melt_repeat_subset <- melt(tm_repeat_subset)
@@ -399,30 +368,30 @@ hmplot_repeat_subset <- ggplot(tm_melt_repeat_subset, aes(Destination, Origin, f
 # pdf("Plots/script4_network_subset.pdf")
 # plot(est_subset)
 # dev.off()
-pdf("Plots/script4_tm_subset.pdf", width=9.5)
-hmplot_subset
-dev.off()
+# pdf("Plots/script4_tm_subset.pdf", width=9.5)
+# hmplot_subset
+# dev.off()
 
 # pdf("Plots/script4_network_repeat_subset.pdf")
 # plot(est_repeat_subset)
 # dev.off()
-pdf("Plots/script4_tm_repeat_subset.pdf", width=9.5)
-hmplot_repeat_subset
-dev.off()
+# pdf("Plots/script4_tm_repeat_subset.pdf", width=9.5)
+# hmplot_repeat_subset
+# dev.off()
 
 # png("Plots/script4_network_subset.png", width=750, height=750)
 # plot(est_subset)
 # dev.off()
-png("Plots/script4_tm_subset.png", width=750, height=650)
-hmplot_subset
-dev.off()
+# png("Plots/script4_tm_subset.png", width=750, height=650)
+# hmplot_subset
+# dev.off()
 
 # png("Plots/script4_network_repeat_subset.png", width=750, height=750)
 # plot(est_repeat_subset)
 # dev.off()
-png("Plots/script4_tm_repeat_subset.png", width=750, height=650)
-hmplot_repeat_subset
-dev.off()
+# png("Plots/script4_tm_repeat_subset.png", width=750, height=650)
+# hmplot_repeat_subset
+# dev.off()
 
 ###
 
@@ -449,30 +418,30 @@ hmplot_repeat_subset_xx <- ggplot(tm_melt_repeat_subset_xx, aes(Destination, Ori
 # pdf("Plots/script4_network_subset_xx.pdf")
 # plot(est_subset_xx)
 # dev.off()
-pdf("Plots/script4_tm_subset_xx.pdf", width=9.5)
-hmplot_subset_xx
-dev.off()
+# pdf("Plots/script4_tm_subset_xx.pdf", width=9.5)
+# hmplot_subset_xx
+# dev.off()
 
 # pdf("Plots/script4_network_repeat_subset_xx.pdf")
 # plot(est_repeat_subset_xx)
 # dev.off()
-pdf("Plots/script4_tm_repeat_subset_xx.pdf", width=9.5)
-hmplot_repeat_subset_xx
-dev.off()
+# pdf("Plots/script4_tm_repeat_subset_xx.pdf", width=9.5)
+# hmplot_repeat_subset_xx
+# dev.off()
 
 # png("Plots/script4_network_subset_xx.png", width=750, height=750)
 # plot(est_subset_xx)
 # dev.off()
-png("Plots/script4_tm_subset_xx.png", width=750, height=650)
-hmplot_subset_xx
-dev.off()
+# png("Plots/script4_tm_subset_xx.png", width=750, height=650)
+# hmplot_subset_xx
+# dev.off()
 
 # png("Plots/script4_network_repeat_subset_xx.png", width=750, height=750)
 # plot(est_repeat_subset_xx)
 # dev.off()
-png("Plots/script4_tm_repeat_subset_xx.png", width=750, height=650)
-hmplot_repeat_subset_xx
-dev.off()
+# png("Plots/script4_tm_repeat_subset_xx.png", width=750, height=650)
+# hmplot_repeat_subset_xx
+# dev.off()
 
 ###You would not use this reduced model for these sorts of predictions.
 # #Predict a new constellation
@@ -688,11 +657,9 @@ state_counter_list_master <- xx_counter_list_master <- list()
 state_counter <- 0
 xx_counter <- 0
 for(i in 1:length(unique(data$State))){ #for each state,
-  # i <- 1
   statei <- unique(data$State)[i]
   state_counter_list <- xx_counter_list <- list()
   for(k in 1:length(statestringlist_repeat_xx)){ #for each virus,
-    # k <- 1
     statestringlist_repeat_xx_k <- statestringlist_repeat_xx[[k]]
     if(statestringlist_repeat_xx_k[1] == statei){
       state_counter <- state_counter+1
@@ -711,14 +678,11 @@ for(i in 1:length(unique(data$State))){ #for each state,
 
 names(xx_counter_list_master) <- unique(data$State)
 names(state_counter_list_master) <- unique(data$State)
-# dudd <- cbind(state_counter_list_master,xx_counter_list_master)
 dudd <- cbind(unlist(state_counter_list_master),unlist(xx_counter_list_master))
 dudd <-  unlist(xx_counter_list_master)/unlist(state_counter_list_master)
 names(dudd) <- unique(data$State)
 sort(dudd)
 plot(dudd)
-
-
 
 #####################################
 ### Evaluating transition matrices for accuracy
@@ -762,14 +726,12 @@ counter <- 0 #needs to be defined here, in case the first constellation tries to
 
 i <- j <- k <- NULL
 for(i in 1:length(statestring_masterlist)){
-  # i <- 5
   statestringlisti <- statestring_masterlist[[i]]
   tm_eval_list <- list()
   statestring_test_list <- list()
   
   #make the four evaluatory tms for statestring i:
   for(j in 1:4){
-    # j <- 1
     statestringlist_train <- statestringlisti[-seq(j, length(statestringlisti), 4)]
     statestringlist_test <- statestringlisti[seq(j, length(statestringlisti), 4)]
     
@@ -809,7 +771,6 @@ for(i in 1:length(statestring_masterlist)){
   
   j <- k <- NULL
   for(j in 1:length(tm_eval_list_df)){                     #for each evaluatory tm,
-    # j <- 2
     tmj <- tm_eval_list_df[[j]]                            #name the evaluatory tm j "tmj"
     if(length(states_eval_list[[j]]) > 0){                 #if tmj is missing more than 0 states,
       for(k in 1:length(states_eval_list[[j]])){           #for each missing state k,
@@ -821,7 +782,6 @@ for(i in 1:length(statestring_masterlist)){
         rownames(tmj)[nrow(tmj)] <- st
         st <- NULL
       }
-      # print(dim(tmj))
       tm_eval_list_df[[j]] <- tmj                          #overwrite the element in the list with the fixed tmj object
     }
   }
@@ -837,11 +797,9 @@ for(i in 1:length(statestring_masterlist)){
   trials_list <- list()                                                                              #start a list to store the trials
   
   for(j in 1:length(statestring_test_list)){                                                        #for each 1 of 4 eval/testing group pairs,
-    # j <- 1
     tm_eval_colmeans <- colMeans(tm_eval_list_df[[j]])
     
     for(k in 1:length(statestring_test_list[[j]])){                                                 #for each constellation in the test group,
-      # k <- 1
       constellation <- names(statestring_test_list[[j]][k])                                            #pick the constellation,
       constellation_statestring <- as.data.frame(unlist(statestring_test_list[[j]][k]))[,1]         #pull that constellation's state sequence,
       state_final_actual <- tail(constellation_statestring, 1);state_final_actual                   #take the final state,
@@ -850,7 +808,8 @@ for(i in 1:length(statestring_masterlist)){
       tm_eval_sub <- tm_eval_list_df[[j]][which(rownames(tm_eval_list_df[[j]])==prior_state),];tm_eval_sub    #tm_eval row of the prior state
       
       if(descriptor_repeat[i] == "no"){                                                                                             #if we are disallowing repeats,
-        tm_eval_sub <- tm_eval_sub[names(tm_eval_sub) %!in% head(constellation_statestring, n=length(constellation_statestring)-1)] #the pool of possible next states cannot be in the constellation state string, minus the final state
+        tm_eval_sub <- tm_eval_sub[names(tm_eval_sub) %!in% head(constellation_statestring, n=length(constellation_statestring)-1)] #the pool of possible next states cannot be in the constellation state string,
+                                                                                                                                    #minus the final state
       }
       
       state_final_predict <- colnames(tm_eval_sub)[which(tm_eval_sub == max(tm_eval_sub))];state_final_predict
@@ -926,13 +885,11 @@ i <- j <- k <- NULL
 set.seed(10);random_numbers <- sample(0:100, size = 1000, replace = TRUE)
 
 for(i in 1:length(statestring_masterlist_xx)){
-  # i <- 4
   statestringlisti <- statestring_masterlist_xx[[i]]
   tm_eval_list <- list()
   statestring_test_list <- list()
   #make the four evaluatory tms for statestring i:
   for(j in 1:4){
-    # j <- 1
     statestringlist_train <- statestringlisti[-seq(j, length(statestringlisti), 4)]
     statestringlist_test <- statestringlisti[seq(j, length(statestringlisti), 4)]
     m_eval <- do.call("rbind", lapply(statestringlist_train, function(x) cbind(head(x, -1), tail(x, -1))))
@@ -968,11 +925,9 @@ for(i in 1:length(statestring_masterlist_xx)){
   tm_eval_list_df <- list(tm_eval1_df, tm_eval2_df, tm_eval3_df, tm_eval4_df)
   j <- k <- NULL
   for(j in 1:length(tm_eval_list_df)){                     #for each evaluatory tm,
-    # j <- 2
     tmj <- tm_eval_list_df[[j]]                            #name the evaluatory tm j "tmj"
     if(length(states_eval_list[[j]]) > 0){                 #if tmj is missing more than 0 states,
       for(k in 1:length(states_eval_list[[j]])){           #for each missing state k,
-        # k <- 1
         st <- states_eval_list[[j]][k]                     #define the state
         tmj$newcol <- 0                                    #add new column
         tmj <- rbind(tmj, 0)                               #add new row
@@ -995,10 +950,8 @@ for(i in 1:length(statestring_masterlist_xx)){
   counter_list_guessnotXX <- list()                                                                 #start a list to store the counters
   trials_list <- list()                                                                             #start a list to store the trials
   for(j in 1:length(statestring_test_list)){                                                        #for each 1 of 4 eval/testing group pairs,
-    # j <- 1
     tm_eval_colmeans <- colMeans(tm_eval_list_df[[j]])
     for(k in 1:length(statestring_test_list[[j]])){                                                 #for each constellation in the test group,
-      # k <- 1
       constellation <- names(statestring_test_list[[j]][k])                                         #pick the constellation,
       constellation_statestring <- as.data.frame(unlist(statestring_test_list[[j]][k]))[,1]         #pull that constellation's state sequence,
       set.seed(random_numbers[k]);rand <- sample(1:(length(constellation_statestring)-1), 1)        #pick a random number 1:(length of string-1)
@@ -1199,12 +1152,12 @@ maptheme <- theme(panel.grid = element_blank()) +
         legend.text = element_text(size = 10))
 
 map1 <- ggplot(centroids_try) + usa_shapes + maptheme + mapcoords + 
-  scale_fill_gradient(name="Swine inventory (million)",low="grey30",high="pink3") +
+  scale_fill_gradient(name="Swine inventory (million)",low="grey30",high="pink3", breaks=c(0,3,6,9,12)) +
   geom_curve(data=tm_try5, arrow = arrow(length = unit(0.03, "npc"), type="closed"),
              aes(x = x, y = y, xend = xend, yend = yend, size=Probability, color=Probability),
              curvature = 0.33,
              alpha = 0.85, show.legend=TRUE) +
-  scale_color_gradient(name="Transition probability",low="#CCFFFF", high="dodgerblue4") +
+  scale_color_gradient(name="Transition probability",low="#CCFFFF", high="dodgerblue4", breaks=c(0.1,0.2,0.3,0.4)) +
   scale_size_continuous(guide = FALSE, range = c(1, 4)) + 
   geom_text(data = centroids_try, aes(x = lon, y = lat, label = postal_code), 
             hjust = 0, nudge_x = 0.2, nudge_y = -0.2,
@@ -1223,18 +1176,18 @@ map2 <- ggplot(centroids_try) + usa_shapes + maptheme + mapcoords +
             hjust = 0, nudge_x = 0.2, nudge_y = -0.2,
             size = 7, color = "black", fontface = "bold");map2
 
-pdf("Plots/script4_map1_probability.pdf", )
+pdf("Plots/script4_map1_probability.pdf", height=7.2, width=12)
 map1
 dev.off()
 png("Plots/script4_map1_probability.png", height=720, width=1200)
 map1
 dev.off()
-pdf("Plots/script4_map2_direction.pdf", height=7.2, width=12)
-map2
-dev.off()
-png("Plots/script4_map2_direction.png", height=720, width=1200)
-map2
-dev.off()
+# pdf("Plots/script4_map2_direction.pdf", height=7.2, width=12)
+# map2
+# dev.off()
+# png("Plots/script4_map2_direction.png", height=720, width=1200)
+# map2
+# dev.off()
 
 ##############################
 ##############################
